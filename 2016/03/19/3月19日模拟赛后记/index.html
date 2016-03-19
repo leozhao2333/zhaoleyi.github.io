@@ -1,0 +1,811 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="模拟赛,题解," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="首先，这次模拟赛是我分数最高的一次，但是距离clc神犇还有一定差距（主要在dp上），继续加油↖(^ω^)↗。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="3月19日模拟赛后记">
+<meta property="og:url" content="http://yoursite.com/2016/03/19/3月19日模拟赛后记/index.html">
+<meta property="og:site_name" content="Leo Zhao 's blog">
+<meta property="og:description" content="首先，这次模拟赛是我分数最高的一次，但是距离clc神犇还有一定差距（主要在dp上），继续加油↖(^ω^)↗。">
+<meta property="og:image" content="http://7xrxql.com1.z0.glb.clouddn.com/QQ%E5%9B%BE%E7%89%8720160319123013.gif">
+<meta property="og:updated_time" content="2016-03-19T06:49:06.770Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="3月19日模拟赛后记">
+<meta name="twitter:description" content="首先，这次模拟赛是我分数最高的一次，但是距离clc神犇还有一定差距（主要在dp上），继续加油↖(^ω^)↗。">
+<meta name="twitter:image" content="http://7xrxql.com1.z0.glb.clouddn.com/QQ%E5%9B%BE%E7%89%8720160319123013.gif">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 3月19日模拟赛后记 | Leo Zhao 's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Leo Zhao 's blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'fSYqaVJkH2NpsCK6_3xS','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                3月19日模拟赛后记
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-03-19T12:24:46+08:00" content="2016-03-19">
+              2016-03-19
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/03/19/3月19日模拟赛后记/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/03/19/3月19日模拟赛后记/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>首先，这次模拟赛是我分数最高的一次，但是距离clc神犇还有一定差距（主要在dp上），<br>继续加油↖(^ω^)↗。<br><a id="more"></a></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>首先在刚拿到题目的时候，田总说了一句话:<strong>今天我要AK</strong>，然而something interesting happened<br><img src="http://7xrxql.com1.z0.glb.clouddn.com/QQ%E5%9B%BE%E7%89%8720160319123013.gif" alt="avatar"><strong>田总只有rank9</strong></p>
+<h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><h2 id="第一题"><a href="#第一题" class="headerlink" title="第一题"></a>第一题</h2><p>首先这一道题目貌似来源于usaco，本来<del>好像是Fack John在抓奶牛</del>。题目是有一只猫想抓老鼠，然后猫和老鼠走路的方式是固定的:<br>开始方向都向上，如果遇到了障碍物或者边界，那么花费一秒的时间进行右转90度的操作。当猫和老鼠在某一秒的末到达了同一格，那么<br>猫抓住了老鼠，如果不能，那么输出-1。最开始给一张10×10的正方形，里面是不带空格的字符，<strong>只有C M （星号） .   四种符号,<br>C表示猫，M表示老鼠，打不出的星号表示障碍物，. 表示空地。</strong></p>
+<hr>
+<p>这道题是一个很经典的模拟，只要按部就班推导就可以了，复杂度是o(n)。由于我的代码写得又臭又长，所以大家担待一下<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">int</span> ci,cj,cf,mi,mj,mf;</span><br><span class="line"><span class="keyword">int</span> t=<span class="number">0</span>;</span><br><span class="line"><span class="keyword">bool</span> tu[<span class="number">20</span>][<span class="number">20</span>]=&#123;<span class="literal">false</span>&#125;;</span><br><span class="line"><span class="comment">//定义cf,mf分别记录猫和老鼠的方向</span></span><br><span class="line"><span class="comment">//数值为1表示方向向上，2表示方向向右</span></span><br><span class="line"><span class="comment">//3表示方向向下，4表示方向向左 </span></span><br><span class="line"><span class="keyword">char</span> c[<span class="number">11</span>];</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	freopen(<span class="string">"catch.in"</span>,<span class="string">"r"</span>,<span class="built_in">stdin</span>);</span><br><span class="line">	freopen(<span class="string">"catch.out"</span>,<span class="string">"w"</span>,<span class="built_in">stdout</span>);</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=<span class="number">10</span>;i++)</span><br><span class="line">	&#123;</span><br><span class="line">     <span class="built_in">scanf</span>(<span class="string">"%s"</span>,c);</span><br><span class="line">	 <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;=<span class="number">9</span>;j++)</span><br><span class="line">	 &#123;</span><br><span class="line">	 	<span class="keyword">if</span> (c[j]==<span class="string">'.'</span>)</span><br><span class="line">	 	 tu[i][j+<span class="number">1</span>]=<span class="literal">true</span>;</span><br><span class="line">	 	<span class="keyword">if</span> (c[j]==<span class="string">'C'</span>)</span><br><span class="line">	 	 ci=i,cj=j+<span class="number">1</span>,tu[i][j+<span class="number">1</span>]=<span class="literal">true</span>;</span><br><span class="line">	 	<span class="keyword">if</span> (c[j]==<span class="string">'M'</span>) </span><br><span class="line">	 	 mi=i,mj=j+<span class="number">1</span>,tu[i][j+<span class="number">1</span>]=<span class="literal">true</span>;</span><br><span class="line">	 &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cf=<span class="number">1</span>,mf=<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (t&lt;<span class="number">500000</span>)</span><br><span class="line">	&#123;</span><br><span class="line">	  <span class="keyword">if</span> (ci==mi&amp;&amp;cj==mj)</span><br><span class="line">	   <span class="keyword">break</span>;	</span><br><span class="line">		<span class="keyword">if</span> (cf==<span class="number">1</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span> (tu[ci<span class="number">-1</span>][cj])</span><br><span class="line">			 ci--;</span><br><span class="line">			<span class="keyword">else</span> cf=<span class="number">2</span>; </span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (cf==<span class="number">2</span>)</span><br><span class="line">		      &#123;</span><br><span class="line">		      	<span class="keyword">if</span> (tu[ci][cj+<span class="number">1</span>])</span><br><span class="line">		      	 cj++;</span><br><span class="line">		      	<span class="keyword">else</span> cf=<span class="number">3</span>; </span><br><span class="line">			  &#125;</span><br><span class="line">			  <span class="keyword">else</span> <span class="keyword">if</span> (cf==<span class="number">3</span>)</span><br><span class="line">			        &#123;</span><br><span class="line">			          <span class="keyword">if</span> (tu[ci+<span class="number">1</span>][cj])</span><br><span class="line">			           ci++;</span><br><span class="line">			          <span class="keyword">else</span> cf=<span class="number">4</span>; </span><br><span class="line">					&#125;</span><br><span class="line">					<span class="keyword">else</span> <span class="keyword">if</span> (cf==<span class="number">4</span>)</span><br><span class="line">					      &#123;</span><br><span class="line">					      	<span class="keyword">if</span> (tu[ci][cj<span class="number">-1</span>])</span><br><span class="line">					      	 cj--;</span><br><span class="line">					      	<span class="keyword">else</span> cf=<span class="number">1</span>; </span><br><span class="line">						  &#125;</span><br><span class="line">		<span class="keyword">if</span> (mf==<span class="number">1</span>)</span><br><span class="line">		&#123;</span><br><span class="line">		  <span class="keyword">if</span> (tu[mi<span class="number">-1</span>][mj])</span><br><span class="line">		   mi--;</span><br><span class="line">		  <span class="keyword">else</span> mf=<span class="number">2</span>; 	</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (mf==<span class="number">2</span>)</span><br><span class="line">		      &#123;</span><br><span class="line">		      	<span class="keyword">if</span> (tu[mi][mj+<span class="number">1</span>])</span><br><span class="line">		      	 mj++;</span><br><span class="line">		      	<span class="keyword">else</span> mf=<span class="number">3</span>; </span><br><span class="line">			  &#125;</span><br><span class="line">			  <span class="keyword">else</span> <span class="keyword">if</span> (mf==<span class="number">3</span>)</span><br><span class="line">			        &#123;</span><br><span class="line">			          <span class="keyword">if</span> (tu[mi+<span class="number">1</span>][mj])</span><br><span class="line">					   mi++;</span><br><span class="line">					  <span class="keyword">else</span> mf=<span class="number">4</span>; 	</span><br><span class="line">					&#125;</span><br><span class="line">					<span class="keyword">else</span> <span class="keyword">if</span> (mf==<span class="number">4</span>)	</span><br><span class="line">					      &#123;</span><br><span class="line">					      	<span class="keyword">if</span> (tu[mi][mj<span class="number">-1</span>])</span><br><span class="line">					      	 mj--;</span><br><span class="line">					      	<span class="keyword">else</span> mf=<span class="number">1</span>; </span><br><span class="line">						  &#125;	</span><br><span class="line">	 t++;					  		  </span><br><span class="line">	&#125; </span><br><span class="line">	<span class="keyword">if</span> (t==<span class="number">500000</span>)</span><br><span class="line">	 &#123;</span><br><span class="line">	 	<span class="built_in">printf</span>(<span class="string">"-1"</span>);</span><br><span class="line">	 	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	 &#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d"</span>,t);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="第二题"><a href="#第二题" class="headerlink" title="第二题"></a>第二题</h2><p>这道题目的意思是给出U个大写字母，L个小写字母，P个有序临近对（大概意思是两个相邻的字母）<br>然后求出组成满足要求（大写字母的个数与小写字母的个数符合给定的值）的单词的个数。</p>
+<hr>
+<p>据说是一道dp，但是由于我太弱了，而且dp掌握的不是很好，所以写的是大暴力，然后只骗到了30分。这题要<strong>借用clc的代码</strong><br><a href="http://stevenclc.github.io" target="_blank" rel="external">███████████████████████广告牌███████████████████████</a><br>他用f[i][j][k]表示有i个大写字母,j个小写字母,最后一位是k时的方案数。<br>○|￣|_CLC<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="keyword">int</span> u,l,P,ans,i,j,k,f[<span class="number">300</span>][<span class="number">300</span>][<span class="string">'z'</span>+<span class="number">1</span>];</span><br><span class="line"><span class="keyword">char</span> p[<span class="number">100000</span>][<span class="number">2</span>];</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	freopen(<span class="string">"cowlpha.in"</span>,<span class="string">"r"</span>,<span class="built_in">stdin</span>);</span><br><span class="line">	freopen(<span class="string">"cowlpha.out"</span>,<span class="string">"w"</span>,<span class="built_in">stdout</span>); </span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d%d%d"</span>,&amp;u,&amp;l,&amp;P);</span><br><span class="line">    <span class="keyword">int</span> big,small;</span><br><span class="line">    <span class="keyword">for</span> (i=<span class="number">1</span>;i&lt;=P;i++)</span><br><span class="line">    &#123; </span><br><span class="line">      <span class="built_in">scanf</span>(<span class="string">"%s"</span>,&amp;p[i]);</span><br><span class="line">      big=<span class="number">0</span>;</span><br><span class="line">      small=<span class="number">0</span>;</span><br><span class="line">      <span class="keyword">for</span> (j=<span class="number">0</span>; j&lt;<span class="number">2</span>; j++)</span><br><span class="line">	     <span class="keyword">if</span> (p[i][j]&gt;=<span class="string">'A'</span>&amp;&amp;p[i][j]&lt;=<span class="string">'Z'</span>) big++;</span><br><span class="line">	       <span class="keyword">else</span> small++;</span><br><span class="line">	  f[big][small][p[i][<span class="number">1</span>]]++;     </span><br><span class="line">    &#125;    </span><br><span class="line">    <span class="keyword">for</span> (j=<span class="number">0</span>; j&lt;=u; j++)  </span><br><span class="line">    <span class="keyword">for</span> (k=<span class="number">0</span>; k&lt;=l; k++)</span><br><span class="line">    <span class="keyword">for</span> (i=<span class="number">1</span>; i&lt;=P; i++) </span><br><span class="line">      &#123;</span><br><span class="line">          <span class="keyword">if</span> (p[i][<span class="number">1</span>]&gt;=<span class="string">'A'</span>&amp;&amp;p[i][<span class="number">1</span>]&lt;=<span class="string">'Z'</span>&amp;&amp;j)</span><br><span class="line">             f[j][k][p[i][<span class="number">1</span>]]=(f[j][k][p[i][<span class="number">1</span>]]+f[j<span class="number">-1</span>][k][p[i][<span class="number">0</span>]])%<span class="number">97654321</span>;</span><br><span class="line">          <span class="keyword">if</span> (p[i][<span class="number">1</span>]&gt;=<span class="string">'a'</span>&amp;&amp;p[i][<span class="number">1</span>]&lt;=<span class="string">'z'</span>&amp;&amp;k)</span><br><span class="line">             f[j][k][p[i][<span class="number">1</span>]]=(f[j][k][p[i][<span class="number">1</span>]]+f[j][k<span class="number">-1</span>][p[i][<span class="number">0</span>]])%<span class="number">97654321</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    <span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;=<span class="string">'z'</span>; i++)</span><br><span class="line">      ans=(ans+f[u][l][i])%<span class="number">97654321</span>;      </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%d"</span>,ans);       </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><a href="http://stevenclc.github.io" target="_blank" rel="external">███████████████████████广告牌███████████████████████</a></p>
+<h2 id="第三题"><a href="#第三题" class="headerlink" title="第三题"></a>第三题</h2><p>第三题题目意思是有一个缩减版的汉诺塔游戏，给定一个经过处理过后的汉诺塔的样子，求出是否按照最优的走路方式进行行走<br>如果是，那么输出操作的步数，如果不是，那么输出-1。给定一个n,接下去是n行，每行一个数字wi表示第i小的圆盘在第wi跟杆上</p>
+<hr>
+<h2 id="第三题萎版"><a href="#第三题萎版" class="headerlink" title="第三题萎版"></a>第三题萎版</h2><p>首先我的思路是魔改一个汉诺塔的暴力程序，初始状态是通过给n的值进行手动赋值，然后根据读入进行魔改，然后暴力求解，复杂度<br>未知，但是可以过8个点。<br>于是放一个萎掉的程序<br><figure class="highlight pascal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">program</span> E2_5; <span class="comment">&#123;new hanoi&#125;</span></span><br><span class="line"><span class="keyword">uses</span> math;</span><br><span class="line"><span class="keyword">const</span> max=<span class="number">64</span>;</span><br><span class="line"><span class="keyword">type</span></span><br><span class="line"> arr=<span class="keyword">array</span>[<span class="number">1</span>..max] <span class="keyword">of</span> byte;</span><br><span class="line"><span class="keyword">var</span></span><br><span class="line"> n:byte;</span><br><span class="line"> sou,tar:arr;</span><br><span class="line"> count:longint;</span><br><span class="line"><span class="function"><span class="keyword">procedure</span> <span class="title">init</span>;</span></span><br><span class="line"><span class="keyword">var</span></span><br><span class="line"> i,j,k,x:integer;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line"> assign(input,<span class="string">'han.in'</span>);</span><br><span class="line"> reset(input);</span><br><span class="line"> readln(n);</span><br><span class="line"> <span class="keyword">for</span> i:=<span class="number">1</span> <span class="keyword">to</span> n <span class="keyword">do</span></span><br><span class="line">  sou[i]:=<span class="number">1</span>;</span><br><span class="line"> <span class="keyword">for</span> i:=<span class="number">1</span> <span class="keyword">to</span> n <span class="keyword">do</span></span><br><span class="line"> <span class="keyword">begin</span></span><br><span class="line"> readln(x);</span><br><span class="line"> tar[i]:=x;</span><br><span class="line"> <span class="keyword">end</span>;</span><br><span class="line"> close(input);</span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line"><span class="function"><span class="keyword">procedure</span> <span class="title">move</span><span class="params">(k:integer;w:byte)</span>;</span></span><br><span class="line"><span class="keyword">var</span></span><br><span class="line"> i,j:integer;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line"> <span class="keyword">if</span> sou[k]=w <span class="keyword">then</span> <span class="keyword">exit</span>;</span><br><span class="line"> j:=<span class="number">6</span>-sou[k]-w;</span><br><span class="line"> <span class="keyword">for</span> i:=k-<span class="number">1</span> <span class="keyword">downto</span> <span class="number">1</span> <span class="keyword">do</span> move(i,j);</span><br><span class="line"> sou[k]:=w;</span><br><span class="line"> inc(count);</span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line"><span class="function"><span class="keyword">procedure</span> <span class="title">main</span>;</span></span><br><span class="line"><span class="keyword">var</span></span><br><span class="line"> i:integer;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line"> assign(output,<span class="string">'han.out'</span>);</span><br><span class="line"> rewrite(output);</span><br><span class="line"> <span class="keyword">for</span> i:=n <span class="keyword">downto</span> <span class="number">1</span> <span class="keyword">do</span> move(i,tar[i]);</span><br><span class="line"> writeln(count);</span><br><span class="line"> close(output);</span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line"> init; main;</span><br><span class="line"><span class="keyword">end</span>.</span><br></pre></td></tr></table></figure></p>
+<h2 id="第三题正解版"><a href="#第三题正解版" class="headerlink" title="第三题正解版"></a>第三题正解版</h2><p>正解（凡爷老司机）的版本是根据汉诺塔有一个递归性，所以可以用递归来解决，但是我不懂，所以不能对他的程序进行解释，所以<br>只能弱弱的放上他的代码，如果有哪位神犇看懂了，欢迎对我的文章进行评论，我会采纳任何有价值的建议。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdlib&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">int</span> i,n,w[<span class="number">32</span>],b[<span class="number">32</span>],ans;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">work</span><span class="params">(<span class="keyword">int</span> p,<span class="keyword">int</span> A,<span class="keyword">int</span> B)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> C=<span class="number">6</span>-A-B;</span><br><span class="line">	<span class="keyword">if</span>(w[p]==C)<span class="built_in">puts</span>(<span class="string">"-1"</span>),<span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">	<span class="keyword">if</span>(w[p]==A)work(p<span class="number">-1</span>,A,C);<span class="keyword">else</span></span><br><span class="line">	<span class="keyword">if</span>(w[p]==B)ans+=b[p],work(p<span class="number">-1</span>,C,B);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	freopen(<span class="string">"han.in"</span>,<span class="string">"r"</span>,<span class="built_in">stdin</span>);</span><br><span class="line">	freopen(<span class="string">"han.out"</span>,<span class="string">"w"</span>,<span class="built_in">stdout</span>);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n);</span><br><span class="line">	<span class="keyword">for</span>(b[i=<span class="number">1</span>]=<span class="number">1</span>;i&lt;=n;i++)</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;w[i]);</span><br><span class="line">	<span class="keyword">for</span>(i=<span class="number">2</span>;i&lt;=n;b[i]=b[i<span class="number">-1</span>]*<span class="number">2</span>,i++);</span><br><span class="line">	work(n,<span class="number">1</span>,<span class="number">2</span>),<span class="built_in">printf</span>(<span class="string">"%d"</span>,ans);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="第四题"><a href="#第四题" class="headerlink" title="第四题"></a>第四题</h2><p>其实我连样例有没有做出来，sjy大神的数位dp也没有听懂，所以我就不好意思吧题解放出来了。希望哪位高人可以对我指导。题目的<br>大意是给出x,y,k,b四个数，表示求解在x到y之间整数有多少可以表示成k个不同的b的幂和的形式</p>
+<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>明天是星期天，所以本人需要休息，博客就不更新了，后天开始我们要去省选<del>浪</del>，届时每天应该有时间进行博客更新，甚至有可能<br>可以贴上几张<del>高清无码大图</del>。届时期待</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/模拟赛/" rel="tag">#模拟赛</a>
+          
+            <a href="/tags/题解/" rel="tag">#题解</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/18/对于鲍东方恶劣行径的控诉/" rel="next" title="对于鲍东方恶劣行径的控诉">
+                <i class="fa fa-chevron-left"></i> 对于鲍东方恶劣行径的控诉
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/03/19/3月19日模拟赛后记/"
+           data-title="3月19日模拟赛后记" data-url="http://yoursite.com/2016/03/19/3月19日模拟赛后记/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://7xrxql.com1.z0.glb.clouddn.com/e6dfa219ebc4b7458b83ba58cefc1e178b8215f7.jpg"
+               alt="赵乐毅" />
+          <p class="site-author-name" itemprop="name">赵乐毅</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">4</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zhaoleyi/zhaoleyi.github.io.git" target="_blank">
+                  
+                    <i class="fa fa-globe"></i> github
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/1657975810/home?wvr=5" target="_blank">
+                  
+                    <i class="fa fa-globe"></i> 新浪微博
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:zhaoleyi20010403@126.com" target="_blank">
+                  
+                    <i class="fa fa-globe"></i> 126邮箱
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+            <div class="links-of-blogroll-title">友链</div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/zhaoleyi/zhaoleyi.github.io.git" target="_blank">Github</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://stevenclc.github.io" target="_blank">clc神犇</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://redbowtie.github.io" target="_blank">帅哥</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.mregg.top" target="_blank">hcz神犇</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wyxoi.github.io" target="_blank">wyx神犇</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog-stalker.apphb.com/" target="_blank">大圣神犇</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://vanfei.is-programmer.com/" target="_blank">费老板</a>
+                </li>
+              
+            </ul>
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#正文"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第一题"><span class="nav-number">2.1.</span> <span class="nav-text">第一题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第二题"><span class="nav-number">2.2.</span> <span class="nav-text">第二题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第三题"><span class="nav-number">2.3.</span> <span class="nav-text">第三题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第三题萎版"><span class="nav-number">2.4.</span> <span class="nav-text">第三题萎版</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第三题正解版"><span class="nav-number">2.5.</span> <span class="nav-text">第三题正解版</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第四题"><span class="nav-number">2.6.</span> <span class="nav-text">第四题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#后记"><span class="nav-number">3.</span> <span class="nav-text">后记</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">赵乐毅</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"zhaoleyi"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+
+</body>
+</html>

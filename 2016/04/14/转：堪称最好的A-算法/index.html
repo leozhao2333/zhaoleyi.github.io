@@ -1,0 +1,901 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta name="baidu-site-verification" content="wWZWFaaBUR" />
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="模板,分享,A*," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="首先，这篇文章是转发的，如果我有侵权行为，请给我发邮件或者在文章底下留言，我会在24小时以内删除O(∩_∩)O原文地址">
+<meta property="og:type" content="article">
+<meta property="og:title" content="转：堪称最好的A*算法">
+<meta property="og:url" content="http://zhaoleyi.github.io/2016/04/14/转：堪称最好的A-算法/index.html">
+<meta property="og:site_name" content="Leo Zhao 's blog">
+<meta property="og:description" content="首先，这篇文章是转发的，如果我有侵权行为，请给我发邮件或者在文章底下留言，我会在24小时以内删除O(∩_∩)O原文地址">
+<meta property="og:image" content="http://theory.stanford.edu/~amitp/GameProgramming/concave1.png">
+<meta property="og:image" content="http://theory.stanford.edu/~amitp/GameProgramming/concave2.png">
+<meta property="og:image" content="http://theory.stanford.edu/~amitp/game-programming/a-star/map-as-graph.png">
+<meta property="og:image" content="http://theory.stanford.edu/~amitp/game-programming/a-star/dijkstra.png">
+<meta property="og:image" content="http://theory.stanford.edu/~amitp/game-programming/a-star/best-first-search.png">
+<meta property="og:image" content="http://theory.stanford.edu/~amitp/game-programming/a-star/dijkstra-trap.png">
+<meta property="og:image" content="http://theory.stanford.edu/~amitp/game-programming/a-star/best-first-search-trap.png">
+<meta property="og:image" content="http://theory.stanford.edu/~amitp/game-programming/a-star/a-star.png">
+<meta property="og:image" content="http://theory.stanford.edu/~amitp/game-programming/a-star/a-star-trap.png">
+<meta property="og:image" content="http://theory.stanford.edu/~amitp/game-programming/a-star/manhattan.png">
+<meta property="og:image" content="http://theory.stanford.edu/~amitp/game-programming/a-star/diagonal.png">
+<meta property="og:image" content="http://theory.stanford.edu/~amitp/game-programming/a-star/euclidean.png">
+<meta property="og:image" content="http://theory.stanford.edu/~amitp/game-programming/a-star/best-first-search-trap.png">
+<meta property="og:image" content="http://theory.stanford.edu/~amitp/game-programming/a-star/tie-breaking-off.png">
+<meta property="og:image" content="http://theory.stanford.edu/~amitp/game-programming/a-star/tie-breaking-scale-1.png">
+<meta property="og:image" content="http://theory.stanford.edu/~amitp/game-programming/a-star/tie-breaking-scale-2.png">
+<meta property="og:image" content="http://theory.stanford.edu/~amitp/game-programming/a-star/tie-breaking-cross-1.png">
+<meta property="og:image" content="http://theory.stanford.edu/~amitp/game-programming/a-star/tie-breaking-cross-2.png">
+<meta property="og:image" content="http://theory.stanford.edu/~amitp/GameProgramming/mtn_path.png">
+<meta property="og:updated_time" content="2016-04-14T00:07:03.909Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="转：堪称最好的A*算法">
+<meta name="twitter:description" content="首先，这篇文章是转发的，如果我有侵权行为，请给我发邮件或者在文章底下留言，我会在24小时以内删除O(∩_∩)O原文地址">
+<meta name="twitter:image" content="http://theory.stanford.edu/~amitp/GameProgramming/concave1.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+    
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  <title> 转：堪称最好的A*算法 | Leo Zhao 's blog </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?e4610b3b6fbf0f21c2c2f15e0e538b83";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="">
+
+  
+
+
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-76305073-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Leo Zhao 's blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'fSYqaVJkH2NpsCK6_3xS','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                转：堪称最好的A*算法
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-04-14T08:01:32+08:00" content="2016-04-14">
+              2016-04-14
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/04/14/转：堪称最好的A-算法/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/04/14/转：堪称最好的A-算法/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>首先，这篇文章是转发的，如果我有侵权行为，请给我发邮件或者在文章底下留言，我会在24小时以内删除O(∩_∩)O<br><a href="http://blog.csdn.net/b2b160/article/details/4057781" target="_blank" rel="external">原文地址</a><br><a id="more"></a></p>
+<div id="article_content" class="article_content"><br><p><br></p><p class="MsoNormal" align="center">如此好贴，不能不转！原文地址：<a href="http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht" target="_blank" rel="external">http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht</a></p><br><p class="MsoNormal" align="center">本文版权归原作者、译者所有，我只是转贴；如果侵害到您的权益，请联系我，我将删除本文。</p><br><p class="MsoNormal" align="center">基本上，这文章可以说是最佳A<em>算法文档。极力推荐！</em></p><br><p class="MsoNormal" align="center"><strong><span lang="EN-US">Amit’s A star Page</span></strong><strong><span>中译文</span></strong><strong><span lang="EN-US"></span></strong></p><br><p class="MsoNormal" align="center"><strong><span lang="EN-US">&nbsp;</span></strong></p><br><p class="MsoNormal"><strong><span>译序</span></strong><strong><span lang="EN-US"></span></strong></p><br><p class="MsoNormal"><span>这篇文章很适合</span><span lang="EN-US">A</span><span>算法的初学者，可惜<span class="GramE">网上没</span>找到翻译版的。本着好东西不敢独享的想法，也为了锻炼一下英文，本人译了这篇文章。</span></p><br><p class="MsoNormal"><span>由于本人英文水平非常有限，六级考了两次加一块不超过</span><span lang="EN-US">370</span><span>分，因此本译文难免存在问题。不过也算是抛砖引玉，希望看到有更多的游戏开发方面的优秀译作出现，毕竟中文的优秀资料太少了，中国的游戏开发者的路不好走。</span></p><br><p class="MsoNormal"><span>本人能力有限，译文中有小部分词句实在难以翻译，因此暂时保留英文原文放在译文中。对于不敢确定翻译是否准确的词句，本人用圆括号保留了英文原文，读者可以对照着加以理解。</span></p><br><p class="MsoNormal"><span lang="EN-US">A<em></em></span><span>算法本身是很简单的，因此原文中并没有过多地讨论</span><span lang="EN-US">A</span><span>算法本身，而是花了较大的篇幅讨论了用于保存</span><span lang="EN-US">OPEN</span><span>和</span><span lang="EN-US">CLOSED</span><span>集的数据结构，以及</span><span lang="EN-US">A<em></em></span><span>算法的变种和扩展。</span></p><br><p class="MsoNormal"><span>编程实现</span><span lang="EN-US">A</span><span>是简单的，读者可以用</span><span lang="EN-US">STL</span><span>对本文中的伪代码加以实现（本人已花一天时间实验<span class="GramE">过基本</span>的</span><span lang="EN-US">A<em></em></span><span>搜索）。但是最重要的还是对</span><span lang="EN-US">A</span><span>本身的理解，这样才可以在自己的游戏中处理各种千变万化的情况。</span></p><br><p class="MsoNormal"><span>翻译本文的想法产生于</span><span lang="EN-US">2006</span><span>年</span><span lang="EN-US">5</span><span>月，实际完成于</span><span lang="EN-US">2007</span><span>年</span><span lang="EN-US">4</span><span>月到</span><span lang="EN-US">6</span><span>月，非常惭愧。</span></p><br><p class="MsoNormal"><span>最后，本译文仅<span class="GramE">供交流</span>和参考，对于因本译文放到网上而产生的任何问题，本人不负任何责任。</span></p><br><p class="MsoNormal" align="right"><span>　　　　　　　　　　　　　　　　　　　　　　　　　　蔡鸿于南开大学软件学院</span></p><br><p class="MsoNormal" align="right"><span>　　　　　　　　　　　　　　　　　　　　　　　　　　　</span><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>2007<span lang="EN-US"><span lang="EN-US">年</span></span>6<span lang="EN-US"><span lang="EN-US">月</span></span>9<span lang="EN-US"><span lang="EN-US">日</span></span></span></p><br><span lang="EN-US"><br></span><br><p class="MsoNormal"><span>原文地址：</span><span lang="EN-US"><a href="http://theory.stanford.edu/~amitp/GameProgramming/" target="_blank" rel="external">http://theory.stanford.edu/~amitp/GameProgramming/</a></span></p><br><p class="MsoNormal"><span>相关链接：</span><span lang="EN-US"><a href="http://www-cs-students.stanford.edu/%7Eamitp/gameprog.html#Paths" target="_blank" rel="external">http://www-cs-students.stanford.edu/%7Eamitp/gameprog.html#Paths</a></span></p><br><p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p><br><p class="MsoNormal"><span>我们尝试解决的问题是把一个游戏对象（</span><span lang="EN-US">game object</span><span>）从出发点移动到目的地。路径搜索</span><span lang="EN-US">(Pathfinding)</span><span>的目标是找到一条好的路径&mdash;&mdash;避免障碍物、敌人，并把代价（燃料，时间，距离，装备，金钱等）最小化。运动（</span><span lang="EN-US">Movement</span><span>）的目标是找到一条路径并且沿着它行进。把关注的焦点仅集中于其中的一种方法是可能的。一种极端情况是，当游戏对象开始移动时，一个老练的路径搜索器（</span><span lang="EN-US">pathfinder</span><span>）外加一个琐细的运动算法（</span><span lang="EN-US">movement algorithm</span><span>）可以找到一条路径，游戏对象将会沿着该路径移动而忽略其它的一切。另一种极端情况是，一个单纯的运动系统（</span><span lang="EN-US">movement-only system</span><span>）将不会搜索一条路径（最初的&ldquo;路径&rdquo;将被一条直线取代），取而代之的是在每一个结点处仅采取一个步骤，同时考虑周围的环境。同时使用路径搜索</span><span lang="EN-US">(Pathfinding)</span><span>和运动算法（</span><span lang="EN-US">movement algorithm</span><span>）将会得到最好的效果。</span></p><br><span lang="EN-US"><br></span><br><p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p><br><p class="MsoToc1"><span lang="EN-US"><span class="MsoHyperlink"><span><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180937" target="_blank" rel="external">1&nbsp;<span lang="EN-US"><span lang="EN-US">导言</span></span></a></span></span><span></span></span></p><br><p class="MsoToc2"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180938" target="_blank" rel="external">1.1<span>&nbsp;</span><span lang="EN-US"><span lang="EN-US">算法</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc2"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180939" target="_blank" rel="external">1.2<span>&nbsp;Dijkstra</span><span lang="EN-US"><span lang="EN-US">算法与最佳优先搜索</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc2"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180940" target="_blank" rel="external">1.3<span>&nbsp;A<em></em></span><span lang="EN-US"><span lang="EN-US">算法</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc1"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180941" target="_blank" rel="external">2&nbsp;<span lang="EN-US"><span lang="EN-US">启发式算法</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc2"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180942" target="_blank" rel="external">2.1<span>&nbsp;A</span><span lang="EN-US"><span lang="EN-US">对启发式函数的使用</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc2"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180943" target="_blank" rel="external">2.2<span>&nbsp;</span><span lang="EN-US"><span lang="EN-US">速度还是精确度？</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc2"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180944" target="_blank" rel="external">2.3<span>&nbsp;</span><span lang="EN-US"><span lang="EN-US">衡量单位</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc2"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180945" target="_blank" rel="external">2.4<span>&nbsp;</span><span lang="EN-US"><span lang="EN-US">精确的启发式函数</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc3"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180946" target="_blank" rel="external">2.4.1&nbsp;<span lang="EN-US"><span lang="EN-US">预计算的精确启发式函数</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc3"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180947" target="_blank" rel="external">2.4.2&nbsp;<span lang="EN-US"><span lang="EN-US">线性精确启发式算法</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc2"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180948" target="_blank" rel="external">2.5<span>&nbsp;</span><span lang="EN-US"><span lang="EN-US">网格地图中的启发式算法</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc3"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180949" target="_blank" rel="external">2.5.1&nbsp;<span lang="EN-US"><span lang="EN-US">曼哈顿距离</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc3"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180950" target="_blank" rel="external">2.5.2&nbsp;<span lang="EN-US"><span lang="EN-US">对角线距离</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc3"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180951" target="_blank" rel="external">2.5.3&nbsp;<span lang="EN-US"><span lang="EN-US">欧几里得距离</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc3"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180952" target="_blank" rel="external">2.5.4&nbsp;<span lang="EN-US"><span lang="EN-US">平方后的欧几里得距离</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc3"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180953" target="_blank" rel="external">2.5.5 Breaking ties</a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc3"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180954" target="_blank" rel="external">2.5.6&nbsp;<span lang="EN-US"><span lang="EN-US">区域搜索</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc1"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180955" target="_blank" rel="external">3 Implementation notes</a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc2"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180956" target="_blank" rel="external">3.1&nbsp;<span lang="EN-US"><span lang="EN-US">概略</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc2"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180957" target="_blank" rel="external">3.2&nbsp;<span lang="EN-US"><span lang="EN-US">源代码</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc2"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180958" target="_blank" rel="external">3.3&nbsp;<span lang="EN-US"><span lang="EN-US">集合的表示</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc3"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180959" target="_blank" rel="external">3.3.1&nbsp;<span lang="EN-US"><span lang="EN-US">未排序数组或链表</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc3"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180960" target="_blank" rel="external">3.3.2&nbsp;<span lang="EN-US"><span lang="EN-US">排序数组</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc3"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180961" target="_blank" rel="external">3.3.3&nbsp;<span lang="EN-US"><span lang="EN-US">排序链表</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc3"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180962" target="_blank" rel="external">3.3.4&nbsp;<span lang="EN-US"><span lang="EN-US">排序跳表</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc3"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180963" target="_blank" rel="external">3.3.5&nbsp;<span lang="EN-US"><span lang="EN-US">索引数组</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc3"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180964" target="_blank" rel="external">3.3.6&nbsp;<span lang="EN-US"><span lang="EN-US">哈希表</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc3"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180965" target="_blank" rel="external">3.3.7&nbsp;<span lang="EN-US"><span lang="EN-US">二元堆</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc3"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180966" target="_blank" rel="external">3.3.8&nbsp;<span lang="EN-US"><span lang="EN-US">伸展树</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc3"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180967" target="_blank" rel="external">3.3.9 HOT<span lang="EN-US"><span lang="EN-US">队列</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc3"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180968" target="_blank" rel="external">3.3.10&nbsp;<span lang="EN-US"><span lang="EN-US">比较</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc3"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180969" target="_blank" rel="external">3.3.11&nbsp;<span lang="EN-US"><span lang="EN-US">混合实现</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc2"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180970" target="_blank" rel="external">3.4&nbsp;<span lang="EN-US"><span lang="EN-US">与游戏循环的交互</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc3"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180971" target="_blank" rel="external">3.4.1&nbsp;<span lang="EN-US"><span lang="EN-US">提前退出</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc3"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180972" target="_blank" rel="external">3.4.2&nbsp;<span lang="EN-US"><span lang="EN-US">中断算法</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc3"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180973" target="_blank" rel="external">3.4.3&nbsp;<span lang="EN-US"><span lang="EN-US">组运动</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc3"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180974" target="_blank" rel="external">3.4.4&nbsp;<span lang="EN-US"><span lang="EN-US">细化</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc1"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180975" target="_blank" rel="external">4 A<em><span lang="EN-US"><span lang="EN-US">算法的变种</span></span></em></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc2"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180976" target="_blank" rel="external">4.1 beam search</a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc2"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180977" target="_blank" rel="external">4.2&nbsp;<span lang="EN-US"><span lang="EN-US">迭代深化</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc2"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180978" target="_blank" rel="external">4.3&nbsp;<span lang="EN-US"><span lang="EN-US">动态衡量</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc2"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180979" target="_blank" rel="external">4.4&nbsp;<span lang="EN-US"><span lang="EN-US">带宽搜索</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc2"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180980" target="_blank" rel="external">4.5&nbsp;<span lang="EN-US"><span lang="EN-US">双向搜索</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc2"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180981" target="_blank" rel="external">4.6&nbsp;<span lang="EN-US"><span lang="EN-US">动态</span></span>A<span lang="EN-US"><span lang="EN-US">与终身计划</span></span>A<em></em></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc1"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180982" target="_blank" rel="external">5&nbsp;<span lang="EN-US"><span lang="EN-US">处理运动障碍物</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc2"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180983" target="_blank" rel="external">5.1&nbsp;<span lang="EN-US"><span lang="EN-US">重新计算路径</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc2"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180984" target="_blank" rel="external">5.2&nbsp;<span lang="EN-US"><span lang="EN-US">路径拼接</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc2"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180985" target="_blank" rel="external">5.3&nbsp;<span lang="EN-US"><span lang="EN-US">监视地图变化</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc2"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180986" target="_blank" rel="external">5.4&nbsp;<span lang="EN-US"><span lang="EN-US">预测障碍物的运动</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc1"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180987" target="_blank" rel="external">6&nbsp;<span lang="EN-US"><span lang="EN-US">预计算路径的空间代价</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc2"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180988" target="_blank" rel="external">6.1&nbsp;<span lang="EN-US"><span lang="EN-US">位置</span></span>VS<span lang="EN-US"><span lang="EN-US">方向</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc2"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180989" target="_blank" rel="external">6.2&nbsp;<span lang="EN-US"><span lang="EN-US">路径压缩</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc3"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180990" target="_blank" rel="external">6.2.1&nbsp;<span lang="EN-US"><span lang="EN-US">位置存储</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc3"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180991" target="_blank" rel="external">6.2.2&nbsp;<span lang="EN-US"><span lang="EN-US">方向存储</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc2"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180992" target="_blank" rel="external">6.3&nbsp;<span lang="EN-US"><span lang="EN-US">计算导航点</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc2"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180993" target="_blank" rel="external">6.4&nbsp;<span lang="EN-US"><span lang="EN-US">极限路径长度</span></span></a></span></span><span lang="EN-US"></span></p><br><p class="MsoToc2"><span class="MsoHyperlink"><span lang="EN-US"><a href="mhtml:http://dev.gameres.com/Program/Abstract/Arithmetic/AmitAStar.mht#_Toc169180994" target="_blank" rel="external">6.5&nbsp;<span lang="EN-US"><span lang="EN-US">总结</span></span></a></span></span><span lang="EN-US"></span></p><br><h1><span lang="EN-US"><br></span><a name="_Toc169180937"><span lang="EN-US">1&nbsp;</span></a><span><span>导言</span></span><span lang="EN-US"></span></h1><br><p class="MsoNormal"><span>　　</span><span>移动一个简单的物体（<span lang="EN">object</span>）看起来是容易的。而路径搜索是复杂的。为什么涉及到路径搜索就产生麻烦了？考虑以下情况：</span></p><br><p class="MsoNormal"><span><span lang="EN"><img src="http://theory.stanford.edu/~amitp/GameProgramming/concave1.png" alt=""></span></span></p><br><p class="MsoNormal"><span lang="EN"></span></p><br><p class="MsoNormal"><span>　　</span><span>物体（<span lang="EN">unit</span>）最初位于地图的底端并且尝试向顶部移动。物体扫描的区域中<span lang="EN">(</span>粉红色部分<span lang="EN">)</span>没有任何东西显示它不能向上移动，因此它持续向上移动。在靠近顶部时，它探测到一个障碍物然后改变移动方向。然后它沿着<span lang="EN">U</span>形障碍物找到它的红色的路径。相反的，一个路径搜索器（<span lang="EN">pathfinder</span>）将会扫描一个更大的区域（淡蓝色部分），但是它能做到不让物体<span lang="EN">(unit)</span>走向凹形障碍物而找到一条更短的路径<span lang="EN">(</span>蓝色路径）。<span lang="EN"></span></span></p><br><p class="MsoNormal"><span>　　然而你可以扩展一个运动算法，用于对付上图所示的障碍物。或者避免制造凹形障碍，或者把凹形出口标识为危险的<span lang="EN">(</span>只有当目的地在里面时才进去<span lang="EN">):</span></span></p><br><p class="MsoNormal"><span><span lang="EN"><img src="http://theory.stanford.edu/~amitp/GameProgramming/concave2.png" alt=""></span></span></p><br><p class="MsoNormal"><span lang="EN"></span></p><br><p class="MsoNormal"><span>　　比起一直等到最后一刻才发现问题，路径搜索器让你提前<span class="GramE">作出</span>计划。不带路径搜索的运动</span><span lang="EN-US">(movement)</span><span>可以在很多种情形下工作，同时可以扩展到更多的情形，但是路径搜索是一种更常用的解决更多问题的方法。</span></p><br><h2><a name="_Toc169180938"><span lang="EN-US">1.1</span></a><span><span lang="EN-US">&nbsp;</span></span><span><span>算法</span></span><span lang="EN-US"></span></h2><br><p class="MsoNormal"><span>　　计算机科学教材中的路径搜索算法在数学视角的图上工作&mdash;&mdash;由边联结起来的结点的集合。一个<span class="GramE">基于图块</span></span><span lang="EN-US">(tile)</span><span>拼接的游戏地图可以看成是一个图，<span class="GramE">每个图块</span></span><span lang="EN-US">(tile)</span><span>是一个结点，并在<span class="GramE">每个图块之间</span>画一条边：</span></p><br><p class="MsoNormal"><span><img src="http://theory.stanford.edu/~amitp/game-programming/a-star/map-as-graph.png" alt=""></span></p><br><p class="MsoNormal"><span lang="EN"></span></p><br><p class="MsoNormal"><span>　　目前，我会假设我们使用二维网格</span><span lang="EN-US">(grid)</span><span>。稍后我将讨论如何在你的游戏之外建立其他类型的图。</span></p><br><p class="MsoNormal"><span style="font-family: Arial;"><span style="font-size: x-small;"><span>　　许多</span><span lang="EN-US">AI</span><span>领域或算法研究领域中的路径搜索算法是基于任意</span><span lang="EN-US">(arbitrary)</span><span>的图设计的，而不是基于网格</span><span lang="EN-US">(grid-based)</span><span>的图。我们可以找到一些能使用网格地图的特性的东西。有一些我们认为是常识，而算法并不理解。例如，我们知道一些和方向有关的东西：一般而言，如果两个物体距离越远，那么把其中一个物体向另一个移动将花越多的时间；并且我们知道地图中没有任何秘密通道可以从一个地点通向另一个地点。（我假设没有，如果有的话，将会很难找到一条好的路径，因为你并不知道要从何处开始。）</span></span></span></p><br><h2><a name="_Toc169180939"><span lang="EN-US">1.2</span></a><span><span lang="EN-US">&nbsp;Dijkstra</span></span><span><span>算法与最佳优先搜索</span></span><span lang="EN-US"></span></h2><br><p><span>　　<span lang="EN">Dijkstra</span>算法从物体所在的初始点开始，访问图中的结点。它迭代检查待检查结点集中的结点，并把和该结点最靠近的尚未检查的结点加入待检查结点集。该结点集从初始结点向外扩展，直到到达目标结点。<span lang="EN">Dijkstra</span>算法保证能找到一条从初始点到目标点的最短路径，只要所有的边都有一个非负的代价值。（我说&ldquo;最短路径&rdquo;是因为经常会出现许多差不多短的路径。）在下图中，粉红色的结点是初始结点，蓝色的是目标点，而类菱形的有色区域（注：原文是<span lang="EN">teal areas</span>）则是<span lang="EN">Dijkstra</span>算法扫描过的区域。颜色最淡的区域是那些离初始点最远的，因而形成探测过程（<span lang="EN">exploration</span>）的边境（<span lang="EN">frontier</span>）：</span></p><br><p><span><span lang="EN"><img src="http://theory.stanford.edu/~amitp/game-programming/a-star/dijkstra.png" alt=""></span></span></p><br><p class="MsoNormal"><span lang="EN"></span></p><br><p><span>　　最佳优先搜索（<span lang="EN">BFS</span>）算法按照类似的流程运行，不同的是它能够评估（称为启发式的）任意结点到目标点的代价。与选择离初始结点最近的结点不同的是，它选择离目标最近的结点。<span lang="EN">BFS</span>不能保证找到一条最短路径。然而，它比<span lang="EN">Dijkstra</span>算法快的多，因为它用了一个启发式函数（<span lang="EN">heuristic function</span>）快速地导向目标结点。例如，如果目标位于出发点的南方，<span lang="EN">BFS</span>将趋向于导向南方的路径。在下面的图中，越黄的结点代表越高的启发式值（移动到目标的代价高），而越黑的结点代表越低的启发式值（移动到目标的代价低）。这表明了与<span lang="EN">Dijkstra&nbsp;</span>算法相比，<span lang="EN">BFS</span>运行得更快。</span></p><br><p><span><span lang="EN"><img src="http://theory.stanford.edu/~amitp/game-programming/a-star/best-first-search.png" alt=""></span></span></p><br><p class="MsoNormal"><span lang="EN"></span></p><br><p><span>　　然而，这两个例子都仅仅是最简单的情况&mdash;&mdash;地图中没有障碍物，最短路径是直线的。现在我们来考虑前边描述的凹型障碍物。<span lang="EN">Dijkstra</span>算法运行得较慢，但确实能保证找到一条最短路径：</span></p><br><p><span><span lang="EN"><img src="http://theory.stanford.edu/~amitp/game-programming/a-star/dijkstra-trap.png" alt=""></span></span></p><br><p class="MsoNormal"><span lang="EN"></span></p><br><p class="MsoNormal"><span>　　另一方面，</span><span lang="EN">BFS</span><span>运行得较快，但是它找到的路径明显不是一条好的路径：</span></p><br><p class="MsoNormal"><span lang="EN"><img src="http://theory.stanford.edu/~amitp/game-programming/a-star/best-first-search-trap.png" alt=""></span></p><br><p class="MsoNormal"><span lang="EN"></span></p><br><p><span>　　问题在于<span lang="EN">BFS</span>是基于贪心策略的，它试图向目标移动尽管这不是正确的路径。由于它仅仅考虑到达目标的代价，而忽略了当前已花费的代价，于是尽管路径变得很长，它仍然继续走下去。<span lang="EN"></span></span></p><br><p><span>　　结合两者的优点不是更好吗？<span lang="EN">1968</span>年发明的<span lang="EN">A</span>算法就是把启发式方法（<span lang="EN">heuristic approaches</span>）如<span lang="EN">BFS</span>，和常规方法如<span lang="EN">Dijsktra</span>算法结合在一起的算法。有点不同的是，类似<span lang="EN">BFS</span>的启发式方法经常给出一个近似解而不是保证最佳解。然而，尽管<span lang="EN">A<em></em></span>基于无法保证<span class="GramE">最佳解</span>的启发式方法，<span lang="EN">A</span>却能保证找到一条最短路径。</span><span lang="EN-US"></span></p><br><h2><a name="_Toc169180940"><span lang="EN-US">1.3</span></a><span><span lang="EN-US">&nbsp;A<em></em></span></span><span><span>算法</span></span><span lang="EN-US"></span></h2><br><p class="MsoNormal"><span>　　我将集中讨论</span><span lang="EN-US">A</span><span>算法。</span><span lang="EN-US">A<em></em></span><span>是路径搜索中最受欢迎的选择，因为它相当灵活，并且能用于多种多样的情形之中。</span></p><br><p class="MsoNormal"><span>　　和其它的图搜索算法一样，</span><span lang="EN-US">A</span><span>潜在地搜索图中一个很大的区域。和</span><span lang="EN-US">Dijkstra</span><span>一样，</span><span lang="EN-US">A<em></em></span><span>能用于搜索最短路径。和</span><span lang="EN-US">BFS</span><span>一样，</span><span lang="EN-US">A</span><span>能用启发式函数（注：原文为</span><span lang="EN-US">heuristic</span><span>）引导它自己。在简单的情况中，它和</span><span lang="EN-US">BFS</span><span>一样快。</span></p><br><p class="MsoNormal"><span><img src="http://theory.stanford.edu/~amitp/game-programming/a-star/a-star.png" alt=""></span></p><br><p class="MsoNormal"><span lang="EN"></span></p><br><p class="MsoNormal"><span>　　在凹型障碍物的例子中，</span><span lang="EN-US">A<em></em></span><span>找到一条和</span><span lang="EN-US">Dijkstra</span><span>算法一样好的路径：</span></p><br><p class="MsoNormal"><span><img src="http://theory.stanford.edu/~amitp/game-programming/a-star/a-star-trap.png" alt=""></span></p><br><p class="MsoNormal"><span lang="EN"></span></p><br><p class="MsoNormal"><span>　　成功的<span class="GramE">秘决</span>在于，它把</span><span lang="EN-US">Dijkstra</span><span>算法（靠近初始点的结点）和</span><span lang="EN-US">BFS</span><span>算法（靠近目标点的结点）的信息<span class="GramE">块结合</span>起来。在讨论</span><span lang="EN-US">A</span><span>的标准术语中，</span><span lang="EN-US">g(n)</span><span>表示从初始结点到任意结点</span><span lang="EN-US">n</span><span>的代价，</span><span lang="EN-US">h(n)</span><span>表示从结点</span><span lang="EN-US">n</span><span>到目标点的启发式评估代价（</span><span lang="EN-US">heuristic estimated cost</span><span>）。在上图中，</span><span lang="EN-US">yellow(h)</span><span>表示远离目标的结点而</span><span lang="EN-US">teal(g)</span><span>表示远离初始点的结点。当从初始点向目标点移动时，</span><span lang="EN-US">A<em></em></span><span>权衡这两者。每次进行主循环时，它检查</span><span lang="EN-US">f(n)</span><span>最小的结点</span><span lang="EN-US">n</span><span>，其中</span><span lang="EN-US">f(n) = g(n) + h(n)</span><span>。</span></p><br><h1><a name="_Toc169180941"><span lang="EN-US">2&nbsp;</span></a><span><span>启发式算法</span></span><span lang="EN-US"></span></h1><br><p class="MsoNormal"><span>　　启发式函数</span><span lang="EN-US">h(n)</span><span>告诉</span><span lang="EN-US">A</span><span>从任意结点</span><span lang="EN-US">n</span><span>到目标结点的最小代价评估值。选择一个好的启发式函数是重要的。</span></p><br><h2><a name="_Toc169180942"><span lang="EN-US">2.1</span></a><span><span lang="EN-US">&nbsp;A<em></em></span></span><span><span>对启发式函数的使用</span></span><span lang="EN-US"></span></h2><br><p class="MsoNormal"><span>　　启发式函数可以控制</span><span lang="EN-US">A</span><span>的行为：</span></p><br><ul type="disc"><br><li class="MsoNormal"><span>一种极端情况，如果</span><span lang="EN-US">h(n)</span><span>是</span><span lang="EN-US">0</span><span>，则只有</span><span lang="EN-US">g(n)</span><span>起作用，此时</span><span lang="EN-US">A<em></em></span><span>演变成</span><span lang="EN-US">Dijkstra</span><span>算法，这保证能找到最短路径。</span><span lang="EN"></span></li><br><li class="MsoNormal"><span>如果</span><span lang="EN-US">h(n)</span><span>经常都比从</span><span lang="EN-US">n</span><span>移动到目标的实际代价小（或者相等），则</span><span lang="EN-US">A</span><span>保证能找到一条最短路径。</span><span lang="EN-US">h(n)</span><span>越小，</span><span lang="EN-US">A<em></em></span><span>扩展的结点越多，运行就得越慢。</span><span lang="EN"></span></li><br><li class="MsoNormal"><span>如果</span><span lang="EN-US">h(n)</span><span>精确地等于从</span><span lang="EN-US">n</span><span>移动到目标的代价，则</span><span lang="EN-US">A</span><span>将会仅仅寻找最佳路径而不扩展别的任何结点，这会运行得非常快。尽管这不可能在所有情况下发生，你仍可以在一些特殊情况下让它们精确地相等（译者：指让</span><span lang="EN-US">h(n)</span><span>精确地等于实际值）。只要提供完美的信息，</span><span lang="EN-US">A<em></em></span><span>会运行得很完美，认识这一点很好。</span><span lang="EN"></span></li><br><li class="MsoNormal"><span>如果</span><span lang="EN-US">h(n)</span><span>有时比从</span><span lang="EN-US">n</span><span>移动到目标的实际代价高，则</span><span lang="EN-US">A</span><span>不能保证找到一条最短路径，但它运行得更快。</span><span lang="EN"></span></li><br><li class="MsoNormal"><span>另一种极端情况，如果</span><span lang="EN-US">h(n)</span><span>比</span><span lang="EN-US">g(n)</span><span>大很多，则只有</span><span lang="EN-US">h(n)</span><span>起作用，</span><span lang="EN-US">A<em></em></span><span>演变成</span><span lang="EN-US">BFS</span><span>算法。</span></li><br></ul><br><p class="MsoNormal"><span>　　所以我们得到一个很有趣的情况，那就是我们可以决定我们想要从</span><span lang="EN-US">A</span><span>中获得什么。理想情况下（注：原文为</span><span lang="EN-US">At exactly the right point</span><span>），我们想最快地得到最短路径。如果我们的目标太低，我们仍会得到最短路径，不过速度变慢了；如果我们的目标太高，那我们就放弃了最短路径，但</span><span lang="EN-US">A<em></em></span><span>运行得更快。</span></p><br><p class="MsoNormal"><span>在游戏中，</span><span lang="EN-US">A</span><span>的这个特性非常有用。例如，你会发现在某些情况下，你希望得到一条好的路径（</span><span lang="EN-US">“good” path</span><span>）而不是一条完美的路径（</span><span lang="EN-US">“perfect” path</span><span>）。为了权衡</span><span lang="EN-US">g(n)</span><span>和</span><span lang="EN-US">h(n)</span><span>，你可以修改任意一个。</span></p><br><p class="MsoNormal"><span>注</span><strong><span lang="EN-US">:</span></strong><span>在学术上，如果启发式函数值是对实际代价的低估，</span><span lang="EN-US">A<em></em></span><span>算法被称为简单的</span><span lang="EN-US">A</span><span>算法（原文为</span><span lang="EN-US">simply A</span><span>）。然而，我继续称之为</span><span lang="EN-US">A</span><span>，因为在实现上是一样的，并且在游戏编程领域并不区别</span><span lang="EN-US">A</span><span>和</span><span lang="EN-US">A<em></em></span><span>。</span></p><br><h2><a name="_Toc169180943"><span lang="EN-US">2.2</span></a><span><span lang="EN-US">&nbsp;</span></span><span><span>速度还是精确度？</span></span><span lang="EN-US"></span></h2><br><p class="MsoNormal"><span>　　</span><span lang="EN-US">A</span><span>改变它自己行为的能力基于启发式代价函数，启发式函数在游戏中非常有用。在速度和精确度之间取得折衷将会让你的游戏运行得更快。在很多游戏中，你并不真正需要得到最好的路径，仅需要近似的就足够了。而你需要什么则取决于游戏中发生着什么，或者运行游戏的机器有多快。</span></p><br><p class="MsoNormal"><span>　　假设你的游戏有两种地形，平原和山地，在平原中的移动代价是</span><span lang="EN-US">1</span><span>而在山地则是</span><span lang="EN-US">3</span><span>。</span><span class="GramE"><span lang="EN-US">A<em> is going to search three times as far along flat land as it does along mountainous land.</em></span></span><span lang="EN-US">&nbsp;</span><span>这是因为有可能有一条沿着平原到山地的路径。把两个邻接点之间的评估距离设为</span><span lang="EN-US">1.5</span><span>可以加速</span><span lang="EN-US">A</span><span>的搜索过程。然后</span><span lang="EN-US">A<em></em></span><span>会将</span><span lang="EN-US">3</span><span>和</span><span lang="EN-US">1.5</span><span>比较，这并<span class="GramE">不比把</span></span><span lang="EN-US">3</span><span>和</span><span lang="EN-US">1</span><span>比较差。</span><span lang="EN-US">It is not as dissatisfied with mountainous terrain, so it won’t spend as much time trying to find a way around it. Alternatively, you can speed up up A‘s search by decreasing the amount it searches for paths around mountains―just tell A<em> that the movement cost on mountains is 2 instead of 3. Now it will search only twice as far along the flat terrain as along mountainous terrain. Either approach gives up ideal paths to get something quicker.</em></span></p><br><p class="MsoNormal"><span>速度和精确度之间的选择前不是静态的。你可以基于</span><span lang="EN-US">CPU</span><span>的速度、用于路径搜索的时间片数、地图上物体（</span><span lang="EN-US">units</span><span>）的数量、物体的重要性、组（</span><span lang="EN-US">group</span><span>）的大小、难度或者其他任何因素来进行动态的选择。取得动态的折衷的一个方法是，建立一个启发式函数用于假定通过一个网格空间的最小代价是</span><span lang="EN-US">1</span><span>，然后建立一个代价函数（</span><span lang="EN-US">cost function</span><span>）用于测量（</span><span lang="EN-US">scales</span><span>）：</span></p><br><p class="MsoNormal"><span class="GramE"><span lang="EN-US">g</span></span><span lang="EN-US">&rsquo;(n) = 1 + alpha  ( g(n) &ndash; 1&nbsp;</span><span lang="EN">)</span></p><br><p class="MsoNormal"><span>　　如果</span><span lang="EN-US">alpha</span><span>是</span><span lang="EN-US">0</span><span>，则改进后的代价函数的值总是</span><span lang="EN-US">1</span><span>。这种情况下，地形代价被完全忽略，</span><span lang="EN-US">A<em></em></span><span>工作变成简单地判断一个网格可否通过。如果</span><span lang="EN-US">alpha</span><span>是</span><span lang="EN-US">1</span><span>，则最初的代价函数将起作用，然后你得到了</span><span lang="EN-US">A</span><span>的所有优点。你可以设置</span><span lang="EN-US">alpha</span><span>的值为</span><span lang="EN-US">0</span><span>到</span><span lang="EN-US">1</span><span>的任意值。</span></p><br><p class="MsoNormal"><span>　　你也可以考虑对启发式函数的返回值做选择：绝对最小代价或者期望最小代价。例如，如果你的地图大部分地形是代价为</span><span lang="EN-US">2</span><span>的草地，其它一些地方是代价为</span><span lang="EN-US">1</span><span>的道路，那么你可以考虑让启发式函数不考虑道路，而只返回</span><span lang="EN-US">2<em></em></span><span>距离。</span></p><br><p class="MsoNormal"><span>　　速度和精确度之间的选择并不是全局的。在地图上的某些区域，精确度是重要的，你可以基于此进行动态选择。例如，假设我们可能在某点停止重新计算路径或者改变方向，则在接近当前位置的地方，选择一条好的路径则是更重要的，因此为何要对后续路径的精确度感到厌烦？或者，对于在地图上的一个安全区域，最短路径也许并不十分重要，但是当从一个敌人的村庄逃跑时，安全和速度是最重要的。（译者注：译者认为这里指的是，在安全区域，可以考虑不寻找精确的最短路径而取近似路径，因此寻路快；但在危险区域，逃跑的安全性和逃跑速度是重要的，即路径的精确度是重要的，因此可以多花点时间用于寻找精确路径。）</span></p><br><h2><a name="_Toc169180944"><span lang="EN-US">2.3</span></a><span><span lang="EN-US">&nbsp;</span></span><span><span>衡量单位</span></span><span lang="EN-US"></span></h2><br><p class="MsoNormal"><span>　</span><span lang="EN-US">A</span><span>计算</span><span lang="EN-US">f(n) = g(n) + h(n)</span><span>。为了对这两个值进行相加，这两个<span class="GramE">值必须</span>使用相同的衡量单位。如果</span><span lang="EN-US">g(n)</span><span>用小时来衡量而</span><span lang="EN-US">h(n)</span><span>用米来衡量，那么</span><span lang="EN-US">A<em></em></span><span>将会认为</span><span lang="EN-US">g</span><span>或者</span><span lang="EN-US">h</span><span>太大或者太小，因而你将不能得到正确的路径，同时你的</span><span lang="EN-US">A</span><span>算法将运行得更慢。</span></p><br><h2><a name="_Toc169180945"><span lang="EN-US">2.4</span></a><span><span lang="EN-US">&nbsp;</span></span><span><span>精确的启发式函数</span></span><span lang="EN-US"></span></h2><br><p class="MsoNormal"><span>　　如果你的启发式函数精确地等于实际最佳路径（</span><span lang="EN-US">optimal path</span><span>），如下一部分的图中所示，你会看到此时</span><span lang="EN-US">A<em></em></span><span>扩展的结点将非常少。</span><span lang="EN-US">A</span><span>算法内部发生的事情是：在每一结点它都计算</span><span lang="EN-US">f(n) = g(n) + h(n)</span><span>。当</span><span lang="EN-US">h(n)</span><span>精确地和</span><span lang="EN-US">g(n)</span><span>匹配（译者注：原文为</span><span lang="EN-US">match</span><span>）时，</span><span lang="EN-US">f(n)</span><span>的值在沿着该路径时将不会改变。不在正确路径（</span><span lang="EN-US">right path</span><span>）上的所有结点的</span><span lang="EN-US">f</span><span>值均大于正确路径上的</span><span lang="EN-US">f</span><span>值（译者注：正确路径在这里应该是指最短路径）。如果已经有较低</span><span lang="EN-US">f</span><span>值的结点，</span><span lang="EN-US">A<em></em></span><span>将不考虑</span><span lang="EN-US">f</span><span>值较高的结点，因此它肯定不会偏离最短路径。</span></p><br><h3><a name="_Toc169180946"><span lang="EN-US">2.4.1&nbsp;</span></a><span><span>预计算的精确启发式函数</span></span><span lang="EN-US"></span></h3><br><p class="MsoNormal"><span>　　构造精确启发函数的一种方法是预先计算任意一对结点之间最短路径的长度。在许多游戏的地图中这并不可行。然后，有几种方法可以近似模拟这种启发函数：</span></p><br><ul type="disc"><br><li class="MsoNormal"><span lang="EN">Fit a coarse grid on top of the fine grid. Precompute the shortest path between any pair of coarse grid locations.</span></li><br><li class="MsoNormal"><span lang="EN">Precompute the shortest path between any pair of&nbsp;<a href="http://theory.stanford.edu/~amitp/GameProgramming/MapRepresentations.html#S9" target="_blank" rel="external"><span>waypoints</span></a>. This is a generalization of the coarse grid approach.</span><span lang="EN"></span></li><br></ul><br><p class="MsoNormal"><span>　　</span><span>（译者：此处不好翻译，暂时保留原文）</span></p><br><p class="MsoNormal"><span>然后添加一个启发函数</span><span lang="EN-US">h<span class="GramE">&rsquo;</span></span><span>用于评估从任意位置到达邻近导航点（</span><span lang="EN-US">waypoints</span><span>）的代价。（如果愿意，后者也可以通过预计算得到。）最终的启发式函数可以是：</span></p><br><p class="MsoNormal"><span class="GramE"><span lang="EN-US">h(</span></span><span lang="EN-US">n) = h’(n, w1) + distance(w1, w2), h’(w2, goal)</span></p><br><p class="MsoNormal"><span>或者如果你希望一个更好但是更昂贵的启发式函数，则分别用靠近结点和目标的所有的</span><span lang="EN-US">w1,w2</span><span>对对上式进行求值。（译者注：原文为</span><span lang="EN-US">or if you want a better but more expensive heuristic, evaluate the above with all pairs w1, w2 that are close to the node and the goal, respectively.</span><span>）</span></p><br><h3><a name="_Toc169180947"><span lang="EN-US">2.4.2&nbsp;</span></a><span><span>线性精确启发式算法</span></span><span lang="EN-US"></span></h3><br><p class="MsoNormal"><span>　　在特殊情况下，你可以不通过预计算而让启发式函数很精确。如果你有一个不存在障碍物和</span><span lang="EN-US">slow</span><span>地形，那么从初始点到目标的最短路径应该是一条直线。</span></p><br><p class="MsoNormal"><span>　　如果你正使用简单的启发式函数（我们不知道地图上的障碍物），则它应该和精确的启发式函数相符合（译者注：原文为</span><span lang="EN-US">match</span><span>）。如果不是这样，则你会遇到衡量单位的问题，或者你所选择的启发函数类型的问题。</span></p><br><h2><a name="_Toc169180948"><span lang="EN-US">2.5</span></a><span><span lang="EN-US">&nbsp;</span></span><span><span>网格地图中的启发式算法</span></span><span lang="EN-US"></span></h2><br><p class="MsoNormal"><span>　　在网格地图中，有一些众所周知的启发式函数。</span></p><br><h3><a name="_Toc169180949"><span lang="EN-US">2.5.1&nbsp;</span></a><span><span>曼哈顿距离</span></span><span lang="EN-US"></span></h3><br><p class="MsoNormal"><span>标准的启发式函数是曼哈顿距离（</span><span lang="EN-US">Manhattan distance</span><span>）。考虑你的代价函数并找到从一个位置移动到邻近位置的最小代价</span><span lang="EN-US">D</span><span>。因此，我的游戏中的启发式函数应该是曼哈顿距离的</span><span lang="EN-US">D</span><span class="GramE"><span>倍</span></span><span>：</span></p><br><p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="GramE">H(</span>n) = D  (abs ( n.x &ndash; goal.x ) + abs ( n.y &ndash; goal.y ) )</span></p><br><p class="MsoNormal"><span>你应该使用符合你的代价函数的衡量单位。</span></p><br><p class="MsoNormal"><span lang="EN"><img src="http://theory.stanford.edu/~amitp/game-programming/a-star/manhattan.png" alt=""></span></p><br><p class="MsoNormal"><span lang="EN"></span></p><br><p class="MsoNormal"><span lang="EN">(Note: the above image has a&nbsp;<a href="http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html#S12" target="_blank" rel="external"><span>tie-breaker</span></a>&nbsp;added to the heuristic.}</span></p><br><p class="MsoNormal"><span>（译者注：曼哈顿距离</span><span lang="EN">&mdash;&mdash;</span><span>两点在南北方向上的距离加上在东西方向上的距离，即</span><span lang="EN">D</span><span>（</span><span lang="EN">I</span><span>，</span><span lang="EN">J</span><span>）</span><span lang="EN">=|XI-XJ|+|YI-YJ|</span><span>。对于一个具有正南正北、正东正西方向规则布局的城镇街道，从一点到达另一点的距离正是在南北方向上旅行的距离加上在东西方向上旅行的距离因此曼哈顿距离又称为出租车距离，曼哈顿距离不是距离不变量，当坐标轴变动时，点间的距离就会不同</span><span lang="EN">&mdash;&mdash;</span><span>百度知道）</span><span lang="EN"></span></p><br><h3><a name="_Toc169180950"><span lang="EN-US">2.5.2&nbsp;</span></a><span><span>对角线距离</span></span><span lang="EN-US"></span></h3><br><p class="MsoNormal"><span>如果在你的地图中你允许对角运动那么你需要一个不同的启发函数。（</span><span lang="EN">4 east, 4 north</span><span>）的</span><span>曼哈顿距离将变成</span><span lang="EN-US">8<em>D</em></span><span>。然而，你可以简单地移动（</span><span lang="EN-US">4 northeast</span><span>）代替，所以启发函数应该是</span><span lang="EN-US">4D</span><span>。这个函数使用对角线，假设直线和对角线的代价都是</span><span lang="EN-US">D</span><span>：</span><span lang="EN"></span></p><br><p class="MsoNormal"><span class="GramE"><span lang="EN">h(</span></span><span lang="EN">n) = D <em> max(abs(n.x - goal.x), abs(n.y - goal.y))</em></span></p><br><p class="MsoNormal"><span lang="EN"><img src="http://theory.stanford.edu/~amitp/game-programming/a-star/diagonal.png" alt=""></span></p><br><p class="MsoNormal"><span lang="EN"></span></p><br><p class="MsoNormal"><span>如果对角线运动的代价不是</span><span lang="EN">D</span><span>，但类似于</span><span lang="EN">D2 = sqrt(2)  D</span><span>，则上面的启发函数不准确。你需要一些更准确（原文为</span><span lang="EN">sophisticated</span><span>）的东西：</span><span lang="EN"></span></p><br><p class="MsoNormal"><span lang="EN">h<em><span class="GramE">diagonal(</span>n) = min(abs(n.x - goal.x), abs(n.y - goal.y))</em></span></p><br><p class="MsoNormal"><span lang="EN">h<span class="GramE">straight(</span>n) = (abs(n.x - goal.x) + abs(n.y - goal.y))</span></p><br><p class="MsoNormal"><span class="GramE"><span lang="EN">h(</span></span><span lang="EN">n) = D2 <em> h_diagonal(n) + D </em> (h_straight(n) - 2<em>h_diagonal(n)))</em></span></p><br><p class="MsoNormal"><span>这里，我们计算</span><span lang="EN-US">h_diagonal(n)</span><span>：沿着斜线可以移动的步数；</span><span lang="EN-US">h_straight(n)</span><span>：曼哈顿距离；然后合并这两项，让所有的斜线步都乘以</span><span lang="EN-US">D2</span><span>，剩下的所有直线步</span><span lang="EN">(</span><span>注意这里是曼哈顿距离的步数减去</span><span lang="EN">2</span><span>倍的斜线步数</span><span lang="EN">)</span><span>都乘以</span><span lang="EN-US">D</span><span>。</span><span lang="EN"></span></p><br><h3><a name="_Toc169180951"><span lang="EN-US">2.5.3&nbsp;</span></a><span><span>欧几里得距离</span></span><span lang="EN-US"></span></h3><br><p class="MsoNormal"><span>如果你的单位可以沿着任意角度移动（而不是网格方向），那么你也许应该使用直线距离：</span><span lang="EN"></span></p><br><p class="MsoNormal"><span class="GramE"><span lang="EN">h(</span></span><span lang="EN">n) = D  sqrt((n.x-goal.x)^2 + (n.y-goal.y)^2)</span></p><br><p class="MsoNormal"><span>然而，如果是这样的话，直接使用</span><span lang="EN">A<em></em></span><span>时将会遇到麻烦，因为代价函数</span><span lang="EN">g</span><span>不会</span><span lang="EN">match</span><span>启发函数</span><span lang="EN">h</span><span>。因为欧几里<span class="GramE">得距离</span>比曼哈顿距离和对角线距离都短，你仍可以得到最短路径，不过</span><span lang="EN">A</span><span>将运行得更久一些：</span></p><br><p class="MsoNormal"><span lang="EN"><img src="http://theory.stanford.edu/~amitp/game-programming/a-star/euclidean.png" alt=""></span></p><br><p class="MsoNormal"><span lang="EN"></span></p><br><h3><a name="_Toc169180952"><span lang="EN-US">2.5.4&nbsp;</span></a><span><span class="GramE"><span>平方后</span></span></span><span><span>的欧几里得距离</span></span><span lang="EN-US"></span></h3><br><p class="MsoNormal"><span>我曾经看到一些</span><span lang="EN">A<em></em></span><span>的网页，其中提到让你通过使用距离的平方而避免欧几里<span class="GramE">得距离</span>中昂贵的平方根运算：</span><span lang="EN"></span></p><br><p class="MsoNormal"><span class="GramE"><span lang="EN">h(</span></span><span lang="EN">n) = D  ((n.x-goal.x)^2 + (n.y-goal.y)^2)</span></p><br><p class="MsoNormal"><span>不要这样做！这明显地导致衡量单位的问题。当</span><span lang="EN">A<em></em></span><span>计算</span><span lang="EN">f(n) = g(n) + h(n)</span><span>，距离的<span class="GramE">平方将</span>比</span><span lang="EN">g</span><span>的代价大很多，并且你会因为启发式函数评估值过高而停止。对于更长的距离，这样做会靠近</span><span lang="EN">g(n)</span><span>的极端情况而不再计算任何东西，</span><span lang="EN">A</span><span>退化成</span><span lang="EN">BFS</span><span>：</span></p><br><p class="MsoNormal"><span lang="EN"><img src="http://theory.stanford.edu/~amitp/game-programming/a-star/best-first-search-trap.png" alt=""></span></p><br><p class="MsoNormal" align="center"><span lang="EN"></span></p><br><h3><a name="_Toc169180953"><span lang="EN-US">2.5.5 Breaking ties</span></a>&nbsp;<span style="font-size: small;">Breaking ties<span lang="EN-US"></span></span></h3><br><p class="MsoNormal"><span>导致低性能的一个原因来自于启发函数的</span><span lang="EN">ties</span><span>（注：这个词实在不知道应该翻译为什么）。当某些路径具有相同的</span><span lang="EN">f</span><span>值的时候，它们都会被搜索（</span><span lang="EN">explored</span><span>），尽管我们只需要搜索其中的一条：</span><span lang="EN"></span></p><br><p class="MsoNormal" align="center"><span lang="EN"><img src="http://theory.stanford.edu/~amitp/game-programming/a-star/tie-breaking-off.png" alt=""><br></span><span style="font-size: small;"><span style="font-family: 'Times New Roman';"><span class="GramE"><span lang="EN">Ties in f values.</span></span><span lang="EN"></span></span></span></p><br><p class="MsoNormal"><span>为了解决这个问题，我们可以为启发函数添加一个附加值（译者注：原文为</span><span lang="EN">small tie breaker</span><span>）。附加值对于结点必须是确定性的（也就是说，不能是随机的数），而且它必须让</span><span lang="EN">f</span><span class="GramE"><span>值体现</span></span><span>区别。因为</span><span lang="EN">A<em></em></span><span>对</span><span lang="EN">f</span><span>值排序，让</span><span lang="EN">f</span><span>值不同意味着只有一个</span><span lang="EN">“equivalent”</span><span>的</span><span lang="EN">f</span><span>值会被检测。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>一种添加附加值的方式是稍微改变（译者注：原文为</span><span lang="EN">nudge</span><span>）</span><span lang="EN">h</span><span>的衡量单位。如果我们减少衡量单位（译者注：原文为</span><span lang="EN">scale it downwards</span><span>），那么当我们朝着目标移动的时候</span><span lang="EN">f</span><span>将逐渐增加。很不幸，这意味着</span><span lang="EN">A</span><span>倾向于扩展到靠近初始点的结点，而不是靠近目标的结点。我们可以增加衡量单位（译者注：原文为</span><span lang="EN">scale it downwards scale h upwards slightly</span><span>）（甚至是</span><span lang="EN">0.1%</span><span>），</span><span lang="EN">A<em></em></span><span>就会倾向于扩展到靠近目标的结点。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span class="GramE"><span lang="EN">heuristic</span></span><span lang="EN">&nbsp;= (1.0 + p)</span></p><br><p class="MsoNormal"><span>选择因子</span><span lang="EN">p</span><span>使得</span><span lang="EN">p &lt;&nbsp;</span><span>移动一步（</span><span lang="EN">step</span><span>）的最小代价</span><span lang="EN">&nbsp;/&nbsp;</span><span>期望的最长路径长度。假设你不希望你的路径超过</span><span lang="EN">1000</span><span>步（</span><span lang="EN">step</span><span>），你可以使</span><span lang="EN">p = 1 / 1000</span><span>。添加这个附加值的结果是，</span><span lang="EN">A<em></em></span><span>比以前搜索的结点更少了。</span><span lang="EN"></span></p><br><p class="MsoNormal" align="center"><span lang="EN"><img src="http://theory.stanford.edu/~amitp/game-programming/a-star/tie-breaking-scale-1.png" alt=""><br></span><span lang="EN"><span style="font-size: small;"><span style="font-family: 'Times New Roman';">Tie-breaking scaling added to heuristic.</span></span></span></p><br><p class="MsoNormal"><span>当存在障碍物时，当然仍要在它们周围寻找路径，但要意识到，当绕过障碍物以后，</span><span lang="EN">A</span><span>搜索的区域非常少：</span><span lang="EN"></span></p><br><p class="MsoNormal" align="center"><span lang="EN"><img src="http://theory.stanford.edu/~amitp/game-programming/a-star/tie-breaking-scale-2.png" alt=""><br></span><span lang="EN"><span style="font-size: small;"><span style="font-family: 'Times New Roman';">Tie-breaking scaling added to heuristic, works nicely with obstacles.</span></span></span></p><br><p class="MsoNormal"><span lang="EN">Steven van Dijk</span><span>建议，一个更直截了当的方法是把</span><span lang="EN">h</span><span>传递到比较函数（</span><span lang="EN">comparison function</span><span>）。当</span><span lang="EN">f</span><span>值相等时，比较函数检查</span><span lang="EN">h</span><span>，然后添加附加值。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>一个不同的添加附加值的方法是，倾向于从初始点到目标点的连线（直线）：</span><span lang="EN"></span></p><br><p class="MsoNormal"><span lang="EN">dx1 = current.x - goal.x</span></p><br><p class="MsoNormal"><span lang="EN">dy1 = current.y - goal.y</span></p><br><p class="MsoNormal"><span lang="EN">dx2 = start.x - goal.x</span></p><br><p class="MsoNormal"><span lang="EN">dy2 = start.y - goal.y</span></p><br><p class="MsoNormal"><span class="GramE"><span lang="EN">cross</span></span><span lang="EN">&nbsp;= abs(dx1<em>dy2 - dx2</em>dy1)</span></p><br><p class="MsoNormal"><span class="GramE"><span lang="EN">heuristic</span></span><span lang="EN">&nbsp;+= cross<em>0.001</em></span></p><br><p class="MsoNormal"><span>这段代码计算初始</span><span lang="EN">-</span><span>目标向量（</span><span lang="EN">start to goal vector</span><span>）和当前</span><span lang="EN">-</span><span>目标向量（</span><span lang="EN">current point to goal vector</span><span>）的向量叉积（</span><span lang="EN">vector cross-product</span><span>）。</span><span lang="EN">When these vectors don’t line up, the cross product will be larger.</span><span>结果是，这段代码选择的路径稍微倾向于从初始点到目标点的直线。当没有障碍物时，</span><span lang="EN">A</span><span>不仅搜索很少的区域，而且它找到的路径看起来<span class="GramE">非常</span>棒：</span><span lang="EN"></span></p><br><p class="MsoNormal" align="center"><span lang="EN"><img src="http://theory.stanford.edu/~amitp/game-programming/a-star/tie-breaking-cross-1.png" alt=""><br></span><span lang="EN"><span style="font-size: small;"><span style="font-family: 'Times New Roman';">Tie-breaking cross-product added to heuristic, produces pretty paths.</span></span></span></p><br><p class="MsoNormal"><span>然而，因为这种附加值倾向于从初始点到目标点的直线路径，当出现障碍物时将会出现奇怪的结果（注意这条路径仍是最佳的，只是看起来很奇怪）：</span><span lang="EN"></span></p><br><p class="MsoNormal" align="center"><span lang="EN"><img src="http://theory.stanford.edu/~amitp/game-programming/a-star/tie-breaking-cross-2.png" alt=""><br></span><span lang="EN"><span style="font-size: small;"><span style="font-family: 'Times New Roman';">Tie-breaking cross-product added to heuristic, less pretty with obstacles.</span></span></span></p><br><p class="MsoNormal"><span>为了交互地研究这种附加值方法的改进，请参考</span><span lang="EN">James Macgill</span><span>的</span><span lang="EN">A<em></em></span><span>确</span><span lang="EN">applet</span><span>（</span><span lang="EN"><a href="http://www.ccg.leeds.ac.uk/james/aStar/&amp;nbsp" target="_blank" rel="external">http://www.ccg.leeds.ac.uk/james/aStar/&amp;nbsp</a>;</span><span>）</span><span lang="EN">[</span><span>如果链接无效，请使用这个镜像（</span><span lang="EN"><a href="http://www.vision.ee.ethz.ch/~buc/astar/AStar.html" target="_blank" rel="external">http://www.vision.ee.ethz.ch/~buc/astar/AStar.html</a></span><span>）</span><span lang="EN">]</span><span>（译者注：两个<span class="GramE">链接均</span>无效）。使用&ldquo;</span><span lang="EN">Clear</span><span>&rdquo;以清除地图，选择地图对角的两个点。当你使用&ldquo;</span><span lang="EN">Classic A</span><span>&rdquo;方法，你会看到附加值的效果。当你使用&ldquo;</span><span lang="EN">Fudge</span><span>&rdquo;方法，你会看到上面给启发函数添加<span class="GramE">叉积后</span>的效果。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>然而另一种添加附加值的方法是，小心地构造你的</span><span lang="EN">A<em></em></span><span>优先队列，使新插入的具有特殊</span><span lang="EN">f</span><span>值的结点总是比那些以前插入的具有相同</span><span lang="EN">f</span><span>值的旧结点要好一些。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>你也许也想看看能够更灵活地（译者注：原文为</span><span lang="EN">sophisticated</span><span>）添加附加值的</span><span lang="EN">AlphA</span><span>算法（</span><span lang="EN"><a href="http://home1.stofanet.dk/breese/papers.html" target="_blank" rel="external">http://home1.stofanet.dk/breese/papers.html</a></span><span>），不过用这种算法得到的路径是否能达到最佳仍在研究中。</span><span lang="EN">AlphA<em></em></span><span>具有较好的适应性，而且可能比我在上面讨论的附加值方法运行得都要好。然而，我所讨论的附加值方法非常容易实现，所以从它们开始吧，如果你需要得到更好的效果，再去尝试</span><span lang="EN">AlphA</span><span>。</span><span lang="EN"></span></p><br><h3><a name="_Toc169180954"><span lang="EN-US">2.5.6&nbsp;</span></a><span><span>区域搜索</span></span><span lang="EN-US"></span></h3><br><p class="MsoNormal"><span>　　如果你想搜索</span><span>邻</span><span>近目标的任意不确定结点，而不是某个特定的结点，你应该建立一个启发函数</span><span lang="EN">h<span class="GramE">&rsquo;</span>(x)</span><span>，使得</span><span lang="EN">h<span class="GramE">&rsquo;</span>(x)</span><span>为</span><span lang="EN-US">h1(x), h2(x), h3(x)</span><span>。。。的最小值，而这些</span><span lang="EN-US">h1, h2, h3</span><span>是邻近结点的启发函数。然而，一种更快的方法是让</span><span lang="EN-US">A<em></em></span><span>仅搜索目标区域的中心。一旦你从</span><span lang="EN-US">OPEN</span><span>集合中取得任意一个邻近目标的结点，你就可以停止搜索并建立一条路径了。</span><span lang="EN"></span></p><br><h1><a name="_Toc169180955"><span lang="EN-US">3 Implementation notes</span></a><span lang="EN-US"></span></h1><br><h2><a name="_Toc169180956"><span lang="EN-US">3.1&nbsp;</span></a><span><span>概略</span></span><span lang="EN-US"></span></h2><br><p class="MsoNormal"><span>　　如果不考虑具体实现代码，</span><span lang="EN">A</span><span>算法是相当简单的。有两个集合，</span><span lang="EN">OPEN</span><span>集和</span><span lang="EN">CLOSED</span><span>集。其中</span><span lang="EN">OPEN</span><span>集保存待考查的结点。开始时，</span><span lang="EN">OPEN</span><span class="GramE"><span>集只包含</span></span><span>一个元素：初始结点。</span><span lang="EN">CLOSED</span><span>集保存已考查过的结点。开始时，</span><span lang="EN">CLOSED</span><span>集是空的。如果绘成图，</span><span lang="EN">OPEN</span><span>集就是被访问区域的边境（</span><span lang="EN">frontier</span><span>）而</span><span lang="EN">CLOSED</span><span>集则是被访问区域的内部（</span><span lang="EN">interior</span><span>）。每个结点同时保存其父结点的指针因此我们可以知道它是如何被找到的。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>　　在主循环中重复地从</span><span lang="EN">OPEN</span><span>集中取出最好的结点</span><span lang="EN">n</span><span>（</span><span lang="EN">f</span><span>值最小的结点）并检查之。如果</span><span lang="EN">n</span><span>是目标结点，则我们的任务完成了。否则，结点</span><span lang="EN">n</span><span>被从</span><span lang="EN">OPEN</span><span>集中删除并加入</span><span lang="EN">CLOSED</span><span>集。然后检查它的邻居</span><span lang="EN">n<span class="GramE">&rsquo;</span></span><span>。如果邻居</span><span lang="EN">n<span class="GramE">&rsquo;</span></span><span>在</span><span lang="EN">CLOSED</span><span>集中，那么它是已经被检查过的，所以我们不需要考虑它</span><span lang="EN"><em></em></span><span>；如果</span><span lang="EN">n<span class="GramE">&rsquo;</span></span><span>在</span><span lang="EN">OPEN</span><span>集中，那么它是以后肯定会被检查的，所以我们现在不考虑它</span><span lang="EN"></span><span>。否则，把它加入</span><span lang="EN">OPEN</span><span>集，把它的父结点设为</span><span lang="EN">n</span><span>。到达</span><span lang="EN">n<span class="GramE">&rsquo;</span></span><span>的路径的代价</span><span lang="EN">g(n<span class="GramE">&rsquo;</span>)</span><span>，设定为</span><span lang="EN">g(n) + movementcost(n, n<span class="GramE">&rsquo;</span>)</span><span>。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span lang="EN">(<em>)</em></span><span>这里我忽略了一个小细节。你确实需要检查结点的</span><span lang="EN">g</span><span>值是否更小了，如果是的话，需要重新打开（</span><span lang="EN">re-open</span><span>）它。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span lang="EN">OPEN = priority queue containing START</span></p><br><p class="MsoNormal"><span lang="EN">CLOSED = empty set</span></p><br><p class="MsoNormal"><span class="GramE"><span lang="EN">while</span></span><span lang="EN">&nbsp;lowest rank in OPEN is not the GOAL:</span></p><br><p class="MsoNormal"><span lang="EN"><span>&nbsp;&nbsp;</span><span class="GramE">current</span>&nbsp;= remove lowest rank item from OPEN</span></p><br><p class="MsoNormal"><span lang="EN"><span>&nbsp;&nbsp;</span><span class="GramE">add</span>&nbsp;current to CLOSED</span></p><br><p class="MsoNormal"><span lang="EN"><span>&nbsp;&nbsp;</span><span class="GramE">for</span>&nbsp;neighbors of current:</span></p><br><p class="MsoNormal"><span lang="EN"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="GramE">cost</span>&nbsp;= g(current) + movementcost(current, neighbor)</span></p><br><p class="MsoNormal"><span lang="EN"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="GramE">if</span>&nbsp;neighbor in OPEN and cost less than g(neighbor):</span></p><br><p class="MsoNormal"><span lang="EN"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="GramE">remove</span>&nbsp;neighbor from OPEN, because new path is better</span></p><br><p class="MsoNormal"><span lang="EN"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="GramE">if</span>&nbsp;neighbor in CLOSED and cost less than g(neighbor): <strong></strong></span></p><br><p class="MsoNormal"><span lang="EN"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="GramE">remove</span>&nbsp;neighbor from CLOSED</span></p><br><p class="MsoNormal"><span lang="EN"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="GramE">if</span>&nbsp;neighbor not in OPEN and neighbor not in CLOSED:</span></p><br><p class="MsoNormal"><span lang="EN"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="GramE">set</span>&nbsp;g(neighbor) to cost</span></p><br><p class="MsoNormal"><span lang="EN"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="GramE">add</span>&nbsp;neighbor to OPEN</span></p><br><p class="MsoNormal"><span lang="EN"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="GramE">set</span>&nbsp;priority queue rank to g(neighbor) + h(neighbor)</span></p><br><p class="MsoNormal"><span lang="EN"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="GramE">set</span>&nbsp;neighbor’s parent to current</span></p><br><p class="MsoNormal"><span lang="EN">&nbsp;</span></p><br><p class="MsoNormal"><span class="GramE"><span lang="EN">reconstruct</span></span><span lang="EN">&nbsp;reverse path from goal to start</span></p><br><p class="MsoNormal"><span class="GramE"><span lang="EN">by</span></span><span lang="EN">&nbsp;following parent pointers</span></p><br><p class="MsoNormal"><span lang="EN">() This should never happen if you have an admissible heuristic. However in games we often have inadmissible heuristics.</span></p><br><h2><a name="_Toc169180957"><span lang="EN-US">3.2&nbsp;</span></a><span><span>源代码</span></span><span lang="EN-US"></span></h2><br><p class="MsoNormal"><span>我自己的（旧的）</span><span lang="EN">C++A</span><span>代码是可用的：</span><span lang="EN">path.cpp (<a href="http://theory.stanford.edu/~amitp/" target="_blank" rel="external">http://theory.stanford.edu/~amitp/</a> GameProgramming/path.cpp)</span><span>和</span><span lang="EN">path.h (<a href="http://theory.stanford.edu/~amitp/GameProgramming/" target="_blank" rel="external">http://theory.stanford.edu/~amitp/GameProgramming/</a> path.h)</span><span>，但是不容易阅读。还有一份更老的代码（更慢的，但是更容易理解），和很多其它的</span><span lang="EN">A<em></em></span><span>实现一样，它在</span><span lang="EN">Steve Woodcock’</span><span>的游戏</span><span lang="EN">AI</span><span>页面（</span><span lang="EN"><a href="http://www.gameai.com/ai.html" target="_blank" rel="external"><span>http://www.gameai.com/ai.html</span></a></span><span>）。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>在网上，你能找到</span><span lang="EN">C</span><span>，</span><span lang="EN">C++</span><span>，</span><span lang="EN">Visual Basic&nbsp;</span><span>，</span><span lang="EN">Java(<a href="http://www.cuspy.com/software/pathfinder/" target="_blank" rel="external">http://www.cuspy.com/software/pathfinder/</a> doc/)</span><span>，</span><span lang="EN">Flash/Director/Lingo,&nbsp;<a href="http://www.codeproject.com/csharp/CSharpPathfind.asp" target="_blank" rel="external"><span>C#</span></a>(<a href="http://www.codeproject.com/csharp/CSharpPathfind.asp" target="_blank" rel="external"><span>http://www.codeproject.com/csharp/CSharpPathfind.asp</span></a>), Delphi, Lisp, Python, Perl,&nbsp;</span><span>和</span><span lang="EN"><a href="http://www.csupomona.edu/~jrfisher/www/prolog_tutorial/5_1.html" target="_blank" rel="external"><span>Prolog</span></a>&nbsp;</span><span>实现的</span><span lang="EN">A</span><span>代码。一定的阅读</span><span lang="EN">Justin Heyes-Jones</span><span>的</span><span lang="EN">C++</span><span>实现（</span><span lang="EN"><a href="http://www.geocities.com/jheyesjones/astar.html" target="_blank" rel="external"><span>http://www.geocities.com/jheyesjones/astar.html</span></a></span><span>）。</span><span lang="EN"></span></p><br><h2><a name="_Toc169180958"><span lang="EN-US">3.3&nbsp;</span></a><span><span>集合的表示</span></span><span lang="EN-US"></span></h2><br><p class="MsoNormal"><span>你首先想到的用于实现</span><span lang="EN">OPEN</span><span>集和</span><span lang="EN">CLOSED</span><span>集的数据结构是什么？如果你和我一样，你可能想到&ldquo;数组&rdquo;。你也可能想到&ldquo;链表&rdquo;。我们可以使用很多种不同的数据结构，为了选择一种，我们应该考虑我们需要什么样的操作。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>在</span><span lang="EN">OPEN</span><span>集上我们主要有三种操作：主循环重复选择最好的结点并删除它；访问邻居结点时需要检查它是否在集合里面；访问邻居结点时需要插入新结点。插入和删除<span class="GramE">最佳是</span>优先队列（</span><span lang="EN"><a href="http://members.xoom.com/killough/heaps.html" target="_blank" rel="external">http://members.xoom.com/killough/heaps.html</a></span><span>）的典型操作。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>选择哪种数据结构不仅取决于操作，还取决于每种操作执行的次数。检查一个结点是否在集合中这一操作对每个被访问的结点的每个邻居结点都执行一次。删除最佳操作对每个被访问的结点都执行一次。被考虑到的绝大多数结点都会被访问；不被访问的是搜索空间边缘（</span><em><span lang="EN-US">fringe</span></em><span>）的结点。当评估数据结构上面的这些操作时，必须考虑</span><span lang="EN">fringe(F)</span><span>的最大值。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>另外，还有第四种操作，虽然执行的次数相对很少，但还是必须实现的。如果正被检查的结点已经在</span><span lang="EN">OPEN</span><span>集中（这经常发生），并且如果它的</span><span lang="EN">f</span><span>值比已经在</span><span lang="EN">OPEN</span><span>集中的结点要好（这很少见），那么</span><span lang="EN">OPEN</span><span>集中的<span class="GramE">值必须</span>被调整。调整操作包括删除结点（</span><span lang="EN">f</span><span>值不是最佳的结点）和重插入。这两个步骤必须被最优化为一个步骤，这个步骤将移动结点。</span><span lang="EN"></span></p><br><h3><a name="_Toc169180959"><span lang="EN-US">3.3.1&nbsp;</span></a><span><span>未排序数组或链表</span></span><span lang="EN-US"></span></h3><br><p class="MsoNormal"><span>最简单的数据结构是未排序数组或链表。集合关系检查操作（</span><span lang="EN">Membership test</span><span>）很慢，扫描整个结构花费</span><span lang="EN">O(F)</span><span>。插入操作很快，添加到末尾花费</span><span lang="EN">O(1)</span><span>。查找最佳元素（</span><span lang="EN">Finding the best element</span><span>）很慢，扫描整个结构花费</span><span lang="EN">O(F)</span><span>。对于数组，删除最佳元素（</span><span lang="EN">Removing the best element</span><span>）花费</span><span lang="EN">O(F)</span><span>，而链表则是</span><span lang="EN">O(1)</span><span>。调整操作中，查找结点花费</span><span lang="EN">O(F)</span><span>，改变值花费</span><span lang="EN">O(1)</span><span>。</span><span lang="EN"></span></p><br><h3><a name="_Toc169180960"><span lang="EN-US">3.3.2&nbsp;</span></a><span><span>排序数组</span></span><span lang="EN-US"></span></h3><br><p class="MsoNormal"><span>为了加快删除最挂操作，可以对数组进行排序。集合关系检查操作将变成</span><span lang="EN">O(log F)</span><span>，因为我们可以使用折半查找。插入操作会很慢，为了给新元素腾出空间，需要花费</span><span lang="EN">&nbsp;O(F)</span><span>以移动所有的元素。查找最佳元素操作会很快，因为它已经在末尾了所以花费是</span><span lang="EN">O(1)</span><span>。如果我们保证最佳排序至数组的尾部（</span><span lang="EN">best sorts to the&nbsp;</span><em><span lang="EN-US">end</span></em><span lang="EN">&nbsp;of the array</span><span>），删除最佳元素操作花费将是</span><span lang="EN">O(1)</span><span>。调整操作中，查找结点花费</span><span lang="EN">O(logF)</span><span>，改变值</span><span lang="EN">/</span><span>位置花费</span><span lang="EN">O(F)</span><span>。</span><span lang="EN"></span></p><br><h3><a name="_Toc169180961"><span lang="EN-US">3.3.3&nbsp;</span></a><span><span>排序链表</span></span><span lang="EN-US"></span></h3><br><p class="MsoNormal"><span>在排序数组中，插入操作很慢。如果使用链表则可以加速该操作。集合关系检查操作很慢，需要花费</span><span lang="EN">O(F)</span><span>用于扫描链表。插入操作是很快的，插入新元素只花费</span><span lang="EN">O(1)</span><span>时间，但是查找正确位置需要花费</span><span lang="EN">O(F)</span><span>。查找最佳元素很快，花费</span><span lang="EN">O(1)</span><span>时间，因为最佳元素已经在表的尾部。删除最佳元素也是</span><span lang="EN">O(1)</span><span>。调整操作中，查找结点花费</span><span lang="EN">O(F)</span><span>，改变值</span><span lang="EN">/</span><span>位置花费</span><span lang="EN">O(1)</span><span>。</span><span lang="EN"></span></p><br><h3><a name="_Toc169180962"><span lang="EN-US">3.3.4&nbsp;</span></a><span><span>排序跳表</span></span><span lang="EN-US"></span></h3><br><p class="MsoNormal"><span>在未排序链表中查找元素是很慢的。如果用跳表（</span><span lang="EN"><a href="http://en.wikipedia.org/wiki/Skip_list" target="_blank" rel="external">http://en.wikipedia.org/wiki/Skip_list</a></span><span>）代替链表的话，可以加速这个操作。在跳表中，如果有排序键（</span><span lang="EN">sort key</span><span>）的话，集合关系检查操作会很快：</span><span lang="EN">O(log F)</span><span>。如果你知道在何处插入的话，和链表一样，插入操作也是</span><span lang="EN">O(1)</span><span>。如果排序键是</span><span lang="EN">f</span><span>，查找最佳元素很快，达到</span><span lang="EN">O(1)</span><span>，删除一个元素也是</span><span lang="EN">O(1)</span><span>。调整操作涉及到查找结点，删除结点和重插入。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>如果我们用地图位置作为跳表的排序键，集合关系检查操作将是</span><span lang="EN">O(log F)</span><span>。在完成集合关系检查后，插入操作是</span><span lang="EN">O(1)</span><span>。查找最佳元素是</span><span lang="EN">O(F)</span><span>，删除一个结点是</span><span lang="EN">O(1)</span><span>。因为集合关系检查更快，所以它比未排序链表要好一些。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>如果我们用</span><span lang="EN">f</span><span>值作为跳表的排序键，集合关系检查操作将是</span><span lang="EN">O(F)</span><span>。插入操作是</span><span lang="EN">O(1)</span><span>。查找最佳元素是</span><span lang="EN">O(1)</span><span>，删除一个结点是</span><span lang="EN">O(1)</span><span>。这并不比排序链表好。</span><span lang="EN"></span></p><br><h3><a name="_Toc169180963"><span lang="EN-US">3.3.5&nbsp;</span></a><span><span>索引数组</span></span><span lang="EN-US"></span></h3><br><p class="MsoNormal"><span>如果结点的集合有限并且数目是适当的，我们可以使用直接索引结构，索引函数</span><span lang="EN">i(n)</span><span>把结点</span><span lang="EN">n</span><span>映射到一个数组的索引。未排序与排序数组的长度等于</span><span lang="EN">OPEN</span><span>集的最大值，和它们不同，对所有的</span><span lang="EN">n</span><span>，索引数组的长度总是等于</span><span lang="EN">max(i(n))</span><span>。如果你的函数是密集的（没有不被使用的索引），</span><span lang="EN">max(i(n))</span><span>将是你地图中结点的数目。只要你的地图是网格的，让索引函数密集就是容易的。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>假设</span><span lang="EN">i(n)</span><span>是</span><span lang="EN">O(1)</span><span>的，集合关系检查将花费</span><span lang="EN">O(1)</span><span>，因为我们几乎不需要检查</span><span lang="EN-US">Array[i(n)]</span><span>是否包含任何数据。</span><span lang="EN">Insertion is O(1), as we just ste&nbsp;</span><span lang="EN-US">Array[i(n)]</span><span lang="EN">.</span><span>查找和删除最佳操作是</span><span lang="EN">O(numnodes)</span><span>，因为我们必须搜索整个结构。调整操作是</span><span lang="EN">O(1)</span><span>。</span><span lang="EN"></span></p><br><h3><a name="_Toc169180964"><span lang="EN-US">3.3.6&nbsp;</span></a><span><span>哈希表</span></span><span lang="EN-US"></span></h3><br><p class="MsoNormal"><span>索引数组使用了很多内存用于保存不在</span><span lang="EN">OPEN</span><span>集中的所有结点。一个选择是使用哈希表。哈希表使用了一个哈希函数</span><span lang="EN">h(n)</span><span>把地图上每个结点映射到一个哈希码。让哈希表的大小等于</span><span lang="EN">N</span><span>的两倍，以使发生冲突的可能性降低。假设</span><span lang="EN-US">h(n)</span><span lang="EN-US">&nbsp;</span><span>是</span><span lang="EN">O(1)</span><span>的，集体关系检查操作花费</span><span lang="EN">O(1)</span><span>；插入操作花费</span><span lang="EN">O(1)</span><span>；删除最佳元素操作花费</span><span lang="EN">O(numnodes)</span><span>，因为我们需要搜索整个结构。调整操作花费</span><span lang="EN">O(1)</span><span>。</span><span lang="EN"></span></p><br><h3><a name="_Toc169180965"><span lang="EN-US">3.3.7&nbsp;</span></a><span><span>二元堆</span></span><span lang="EN-US"></span></h3><br><p class="MsoNormal"><span>一个二元堆（不要和内存堆混淆）是一种保存在数组中的树结构。和许多普通的树通过指针指向子结点所不同，二元<span class="GramE">堆使用</span>索引来查找子结点。</span><span lang="EN">C++ STL</span><span>包含了一个二元堆的高效实现，我在我自己的</span><span lang="EN">A<em></em></span><span>代码中使用了它。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>在二元堆中，集体关系检查花费</span><span lang="EN">O(F)</span><span>，因为你必须扫描整个结构。插入操作花费</span><span lang="EN-US">O(log F)</span><span>而删除最佳操作花费也是</span><span lang="EN-US">O(log F)</span><span>。</span><span>调整操作很微妙（</span><span lang="EN">tricky</span><span>），花费</span><span lang="EN">O(F)</span><span>时间找到节点，并且很神奇，只用</span><span lang="EN">O(log F)</span><span>来调整。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>我的一个朋友（他研究用于最短路径算法的数据结构）说，除非在你的</span><span lang="EN">fringe</span><span>集里有多于</span><span lang="EN">10000</span><span>个元素，否则二元堆是很不错的。除非你的游戏地图特别大，否则你不需要更复杂的数据结构（如</span><span lang="EN"><a href="http://www-cs-students.stanford.edu/~csilvers/" target="_blank" rel="external"><span>multi-level buckets</span></a></span><span>（</span><span lang="EN"><a href="http://www-cs-students.stanford.edu/~csilvers/" target="_blank" rel="external"><span>http://www-cs-students.stanford.edu/~csilvers/</span></a></span><span>））。你应该尽可能不用</span><span lang="EN">Fibonacci&nbsp;</span><span>堆（</span><span lang="EN"><a href="http://www.star-lab.com/goldberg/pub/neci-tr-96-062.ps" target="_blank" rel="external">http://www.star-lab.com/goldberg/pub/neci-tr-96-062.ps</a></span><span>），因为虽然它的渐近复杂度很好，但是执行起来很慢，除非</span><span lang="EN">F</span><span>足够大。</span><span lang="EN"></span></p><br><h3><a name="_Toc169180966"><span lang="EN-US">3.3.8&nbsp;</span></a><span><span>伸展树</span></span><span lang="EN-US"></span></h3><br><p class="MsoNormal"><span>堆是一种基于树的结构，它有一个期望的</span><span lang="EN">O(log F)</span><span>代价的时间操作。然而，问题是在</span><span lang="EN">A</span><span>算法中，通常的情况是，一个代价小的节点被移除（花费</span><span lang="EN">O(log F)</span><span>的代价，因为其他结点必须从树的底部向上移动），而紧接着一些代价小的节点被添加（花费</span><span lang="EN">O(log F)</span><span>的代价，因为这些结点被添加到底部并且被移动到最顶部）。在这里，堆的操作在预期的情况下和最坏情况下是一样的。如果我们找到这样一种数据结构，最坏情况还是一样，而预期的情况好一些，那么就可以得到改进。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>伸展树（</span><span lang="EN">Splay tree</span><span>）是一种自调整的树结构。任何对树结点的访问都尝试把该结点推到树的顶部（</span><span lang="EN">top</span><span>）。这就产生了一个缓存效果（</span><span lang="EN">“caching” effect</span><span>）：很少被使用的结点跑到底部（</span><span lang="EN">bottom</span><span>）去了并且不减慢操作（</span><span lang="EN">don’t slow down operations</span><span>）。你的</span><span lang="EN">splay</span><span>树有多大并不重要，因为你的操作仅仅和你的&ldquo;</span><span lang="EN">cache size</span><span>&rdquo;一样慢。在</span><span lang="EN">A<em></em></span><span>中，低代价的结点使用得很多，而高代价结点经常不被使用，所以高代价结点将会移动到树的底部。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>使用伸展树后，集体关系检查，插入，删除最佳和调整操作都是期望的</span><span lang="EN">O(log F)</span><span>（注：原文为</span><span lang="EN">expected O(log F)&nbsp;</span><span>），最坏情况是</span><span lang="EN">O(F)</span><span>。然而有代表性的是，缓存过程（</span><span lang="EN">caching</span><span>）避免了最坏情况的发生。</span><span lang="EN">Dijkstra</span><span>算法和带有低估的启发函数（</span><span lang="EN">underestimating heuristic</span><span>）的</span><span lang="EN">A</span><span>算法却有一些特性让伸展树达不到最优。特别是对结点</span><span lang="EN">n</span><span>和邻居结点</span><span lang="EN">n<span class="GramE">&rsquo;</span></span><span>来说，</span><span lang="EN-US">f(n’) &gt;= f(n)</span><span>。</span><span>当这发生时，也许插入操作总是发生在树的同一边结果是使它失去了平衡。我没有试验过这个。</span><span lang="EN"></span></p><br><h3><a name="_Toc169180967"><span lang="EN-US">3.3.9 HOT</span></a><span><span>队列</span></span><span lang="EN-US"></span></h3><br><p class="MsoNormal"><span>还有一种<span class="GramE">比堆好的</span>数据结构。通常你可以限制优先队列中值的范围。给定一个限定的范围，经常会存在更好的算法。例如，对任意值的排序可以在</span><span lang="EN">O(N log N)</span><span>时间内完成，但当固定范围时，桶排序和基数排序可以在</span><span lang="EN">O(N)</span><span>时间内完成。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>我们可以使用</span><span lang="EN">HOT</span><span>（</span><span lang="EN">Heap On Top</span><span>）队列</span><span lang="EN">(<a href="http://www.star-lab.com/goldberg/pub" target="_blank" rel="external">http://www.star-lab.com/goldberg/pub</a> /neci-tr-97-104.ps</span><span>）来利用</span><span lang="EN-US">f(n’) &gt;= f(n)</span><span>，其中</span><span lang="EN-US">n<span class="GramE">&rsquo;</span></span><span>是</span><span lang="EN-US">n</span><span>的一个邻居结点。我们删除</span><span lang="EN-US">f(n)</span><span>值最小的结点</span><span lang="EN-US">n</span><span>，插入满足</span><span lang="EN-US">f(n) &lt;= f(n’) &lt;= f(n) + delta</span><span>的邻居</span><span lang="EN-US">n’</span><span>，其中</span><span lang="EN-US">delta &lt;= C</span><span>。</span><span>常数</span><span lang="EN">C</span><span>是从<span class="GramE">一</span>结点到邻近结点代价改变量的最大值。因为</span><span lang="EN">f(n)</span><span>是</span><span lang="EN">OPEN</span><span>集中的最小</span><span lang="EN">f</span><span>值，并且正要被插入的所有结点都小于或等于</span><span lang="EN-US">f(n) + delta</span><span>，我们知道</span><span lang="EN-US">OPEN</span><span>集中的所有</span><span lang="EN-US">f</span><span>值都不超过一个</span><span lang="EN-US">0..delta</span><span>的范围。在桶</span><span lang="EN-US">/</span><span>基数排序中，我们可以用&ldquo;桶&rdquo;（</span><span lang="EN">buckets</span><span>）对</span><span lang="EN-US">OPEN</span><span>集中的结点进行排序。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>使用</span><span lang="EN">K</span><span class="GramE"><span>个</span></span><span>桶，我们把</span><span lang="EN">O(N)</span><span>的代价降低到平均</span><span lang="EN">O(N/K)</span><span>。通过</span><span lang="EN">HOT</span><span>队列，顶端的<span class="GramE">桶使用</span>二元堆而所有其他的桶都是未排序数组。因而，对顶部的桶，集合关系检查代价是预期的</span><span lang="EN">O(F/K)</span><span>，插入和删除<span class="GramE">最佳是</span></span><span lang="EN">O(log (F/K))</span><span>。对其他桶，集合关系检查是</span><span lang="EN">O(F/K)</span><span>，插入是</span><span lang="EN">O(1)</span><span>，而删除最佳根本不发生！如果顶端的桶是空的，那么我们必须把下<span class="GramE">一个桶即未</span>排序数组转换为二元堆。这个操作（&ldquo;</span><span lang="EN">heapify</span><span>&rdquo;）可以在</span><span lang="EN">O(F/K)</span><span>时间内完成。在调整操作中，删除是</span><span lang="EN">O(F/K)</span><span>，然后插入是</span><span lang="EN">O(log (F/K))</span><span>或</span><span lang="EN">O(1)</span><span>。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>在</span><span lang="EN">A<em></em></span><span>中，我们加入</span><span lang="EN">OPEN</span><span>集中的许多结点实际上根本是不需要的。在这方面</span><span lang="EN">HOT</span><span>队列很有优势，因为不需要的元素的插入操作只花费</span><span lang="EN">O(1)</span><span>时间。只有需要的元素被</span><span lang="EN">heapified</span><span>（代价较低的那些）。唯一<span class="GramE">一个</span>超过</span><span lang="EN">O(1)</span><span>的操作是从堆中删除结点，只花费</span><span lang="EN">O(log (F/K))</span><span>。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>另外，如果</span><span lang="EN">C</span><span>比较小，我们可以只让</span><span lang="EN">K = C</span><span>，则对于最小的桶，我们甚至不需要一个堆，国为在一个桶中的所有结点都有相同的</span><span lang="EN">f</span><span>值。插入和删除<span class="GramE">最佳都是</span></span><span lang="EN">O(1)</span><span>时间！有人研究过，</span><span lang="EN">HOT</span><span>队列在至多在</span><span lang="EN">OPEN</span><span>集中有</span><span lang="EN">800</span><span>个结点时和<span class="GramE">堆一样</span>快，并且如果</span><span lang="EN">OPEN</span><span>集中至多有</span><span lang="EN">1500</span><span>个结点，则<span class="GramE">比堆快</span></span><span lang="EN">20%</span><span>。我期望随着结点的增加，</span><span lang="EN">HOT</span><span>队列也更快。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span lang="EN">HOT</span><span>队列的一个简单的变化是一个二层队列（</span><span lang="EN">two-level queue</span><span>）：把好的结点放进一个数据结构（堆或数组）而把坏的结点放进另一个数据结构（数组或链表）。因为大多数进入</span><span lang="EN">OPEN</span><span>集中的结点都&ldquo;坏的&rdquo;，它们从不被检查，因而把它们放进出一个大数组是没有害处的。</span><span lang="EN"></span></p><br><h3><a name="_Toc169180968"><span lang="EN-US">3.3.10&nbsp;</span></a><span><span>比较</span></span><span lang="EN-US"></span></h3><br><p class="MsoNormal"><span>注意有一点很重要，我们并不是仅仅关心渐近的行为（大</span><span lang="EN">O</span><span>符号）。我们也需要关心小常数（</span><span lang="EN">low constant</span><span>）下的行为。为了说明原因，考虑一个</span><span lang="EN">O(log F)</span><span>的算法，和另一个</span><span lang="EN">O(F)</span><span>的算法，其中</span><span lang="EN">F</span><span>是堆中元素的个数。也许在你的机器上，第一个算法的实现花费</span><span lang="EN">10000log(F)</span><span>秒，而另一个的实现花费</span><span lang="EN">2<em>F</em></span><span>秒。当</span><span lang="EN">F=256</span><span>时，第一个算法将花费</span><span lang="EN">80000</span><span>秒而第二个算法花费</span><span lang="EN">512</span><span>秒。在这种情况下，&ldquo;更快&rdquo;的算法花费更多的时间，而且只有在当</span><span lang="EN">F&gt;200000</span><span>时才能运行得更快。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>你不能仅仅比较两个算法。你还要比较算法的实现。同时你还需要知道你的数据的大小（</span><span lang="EN">size</span><span>）。在上面的例子中，第一种实现在</span><span lang="EN">F&gt;200000</span><span>时更快，但如果在你的游戏中，</span><span lang="EN">F</span><span>小于</span><span lang="EN">30000</span><span>，那么第二种实现好一些。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>基本数据结构没有一种是完全合适的。未排序数组或者链表使插入操作很快而集体关系检查和删除操作非常慢。排序数组或者链表使集体关系检查稍微快一些，删除（最佳元素）操作非常快而插入操作非常慢。<span class="GramE">二元堆让插入</span>和删除操作稍微快一些，而集体关系检查则很慢。伸展树让所有操作都快一些。</span><span lang="EN">HOT</span><span>队列让插入操作很快，删除操作相当快，而集体关系检查操作稍微快一些。索引数组让集体关系检查和插入操作非常快，但是删除操作不可置信地慢，同时还需要花费很多内存空间。哈希表和索引数组类似，但在普通情况下，它花费的内存空间少得多，而删除操作虽然还是很慢，但比索引数组要快。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>关于更高级的优先队列的资料和实现，请参考</span><span lang="EN">Lee Killough</span><span>的优先队列页面（</span><span lang="EN"><a href="http://members.xoom.com/killough/heaps.html" target="_blank" rel="external">http://members.xoom.com/killough/heaps.html</a></span><span>）。</span><span lang="EN"></span></p><br><h3><a name="_Toc169180969"><span lang="EN-US">3.3.11&nbsp;</span></a><span><span>混合实现</span></span><span lang="EN-US"></span></h3><br><p class="MsoNormal"><span>为了得到最佳性能，你将希望使用混合数据结构。在我的</span><span lang="EN">A</span><span>代码中，我使用一个索引数组从而集合关系检查是</span><span lang="EN">O(1)</span><span>的，一个二元堆从而插入操作和删除<span class="GramE">最佳都是</span></span><span lang="EN">O(log F)</span><span>的。对于调整操作，我使用索引数组从而花费</span><span lang="EN">O(1)</span><span>时间检查我是否真的需要进行调整（通过在索引数组中保存</span><span lang="EN">g</span><span>值），然后在少数确实需要进行调整的情况中，我使用二元堆从而调整操作花费</span><span lang="EN">O(F)</span><span>时间。你也可以使用索引数组保存堆中每个结点的位置，这让你的调整操作变成</span><span lang="EN">O(log F)</span><span>。</span><span lang="EN"></span></p><br><h2><a name="_Toc169180970"><span lang="EN-US">3.4&nbsp;</span></a><span><span>与游戏循环的交互</span></span><span lang="EN-US"></span></h2><br><p class="MsoNormal"><span>交互式的（尤其是实时的）游戏对最佳路径的计算要求很高。能够得到一个解决方案比得到最佳方案可能更重要。然而在所有其他因素都相同的情况下，短路径比长路径好。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>一般来说，计算靠近初始结点的路径比靠近目标结点的路径更重要一些。立即开始原理（</span><span lang="EN">The principle of&nbsp;</span><em><span lang="EN-US">immediate start</span></em><span>）：让游戏中的物体尽可能快地开始行动，哪怕是沿着一条不理想的路径，然后再计算一条更好的路径。在实时游戏中，应该更多地关注</span><span lang="EN">A<em></em></span><span>的延迟情况（</span><em><span lang="EN-US">latency</span></em><span>）而不是吞吐量（</span><em><span lang="EN-US">throughput</span></em><span>）。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>可以对物体编程让它们根据自己的本能（简单行为）或者智力（一条预先计算好的路径）来行动。除非它们的智力告诉它们怎么行动，否则它们就根据自己的本能来行动（这是实际上使用的方法，并且</span><span lang="EN">Rodney Brook</span><span>在他的机器人体系结构中也用到）。和立即计算所有路径所不同，让游戏在每一个，两个，或者三个循环中搜索一条路径。让物体在开始时依照本能行动</span><span lang="EN">(</span><span>可能仅仅是简单地朝着目标直线前进</span><span lang="EN">)</span><span>，然后才为它们寻找路径。这种方法让让路径搜索的代价趋于平缓，因此它不会集中发生在同一时刻。</span><span lang="EN"></span></p><br><h3><a name="_Toc169180971"><span lang="EN-US">3.4.1&nbsp;</span></a><span><span>提前退出</span></span><span lang="EN-US"></span></h3><br><p class="MsoNormal"><span>可以从</span><span lang="EN">A</span><span>算法的主循环中提前退出来同时得到一条局部路径。通常，当找到目标结点时，主循环就退出了。然而，在此之前的任意结点，可以得到一条到达</span><span lang="EN">OPEN</span><span>中当前最佳结点的路径。这个结点是到达目标点的最佳选择，所以它是一个理想的中间结点（原文为</span><span lang="EN">so it’s a reasonable place to go</span><span>）。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>可以提前退出的情况包括检查了一定数量的结点，</span><span lang="EN">A<em></em></span><span>算法已经运行了几毫秒时间，或者扫描了一个离初始<span class="GramE">点有些</span>距离的结点。当使用路径拼接时，应该给被拼接的路径一个比全路径（</span><span lang="EN">full path</span><span>）小的最大长度。</span><span lang="EN"></span></p><br><h3><a name="_Toc169180972"><span lang="EN-US">3.4.2&nbsp;</span></a><span><span>中断算法</span></span><span lang="EN-US"></span></h3><br><p class="MsoNormal"><span>如果需要进行路径搜索的物体较少，或者如果用于保存</span><span lang="EN">OPEN</span><span>和</span><span lang="EN">CLOSED</span><span>集的数据结构较小，那么保存算法的状态是可行的，然后退出到游戏循环继续运行游戏。</span><span lang="EN"></span></p><br><h3><a name="_Toc169180973"><span lang="EN-US">3.4.3&nbsp;</span></a><span><span>组运动</span></span><span lang="EN-US"></span></h3><br><p class="MsoNormal"><span>路径请求并不是均匀分布的。即时策略游戏中有一个常见的情况，玩家会选择多个物体并命令它们朝着同样的目标移动。这给路径搜索系统以沉重的负载。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>在这种情况下，为某个物体寻找到的路径对其它物体也是同样有用的。一种方法是，寻找一条从物体的中心到目的地中心的路径</span><span lang="EN">P</span><span>。对所有物体使用该路径的绝大部分，对每一个物体，前十步和后十步使用为它自己寻找的路径。物体</span><span lang="EN">i</span><span>得到一条从它的开始点到</span><span lang="EN">P[10]</span><span>的路径，紧接着是共享的路径</span><span lang="EN-US">P[10..len(P)-10]</span><span>，最后是从</span><span lang="EN-US">P[len(P)-10]</span><span>到目的地的路径。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>为每个物体寻找的路径是较短的（平均步数大约是</span><span lang="EN">10</span><span>），而较长的路径被共享。大多数路径只寻找一次并且为所有物体所共享。然而，当玩家们看到所有的物体都沿着相同的路径移动时，将对游戏失去兴趣。为了对系统做些改进，可以让物体稍微沿着不同的路径运动。一种方法是选择邻近结点以改变路径。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>另一种方法是让每个物体都意识到其它物体的存在（或许是通过随机选择一个&ldquo;领导&rdquo;物体，或者是通过选择一个能够最好地意识到当前情况的物体），同时仅仅为领导寻路。然后用</span><span lang="EN">flocking</span><span>算法让它们以组的形式运动。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>然而还有一种方法是利用</span><span lang="EN">A</span><span>算法的中间状态。这个状态可以被朝着相同目标移动的多个物体共享，只要物体共享相同的启发式函数和代价函数。当主循环退出时，不要消除</span><span lang="EN">OPEN</span><span>和</span><span lang="EN">CLOSED</span><span>集；用</span><span lang="EN">A<em></em></span><span>上一次的</span><span lang="EN">OPEN</span><span>和</span><span lang="EN">CLOSED</span><span>集开始下一次的循环（下一个物体的开始位置）。（这可以被看成是中断算法和提前退出部分的一般化）</span><span lang="EN"></span></p><br><h3><a name="_Toc169180974"><span lang="EN-US">3.4.4&nbsp;</span></a><span><span>细化</span></span><span lang="EN-US"></span></h3><br><p class="MsoNormal"><span>如果地图中没有障碍物，而有不同代价的地形，那么可以通过低估地形的代价来计算一条初始路径。例如，如果草地的代价是</span><span lang="EN">1</span><span>，山地代价是</span><span lang="EN">2</span><span>，山脉的代价是</span><span lang="EN">3</span><span>，那么</span><span lang="EN">A</span><span>会考虑通过</span><span lang="EN">3</span><span>个草地以避免</span><span lang="EN">1</span><span>个山脉。通过把草地看成</span><span lang="EN">1</span><span>，山地看成</span><span lang="EN">1.1</span><span>，而山脉看成</span><span lang="EN">1.2</span><span>来计算初始路径，</span><span lang="EN">A<em></em></span><span>将会用更少的时间去设法避免山脉，而且可以更快地找到一条路径（这接近于精确启发函数的效果）。一旦找到一条路径，物体就可以开始移动，游戏循环就可以继续了。当多余的</span><span lang="EN">CPU</span><span>时间是可用的时候，可以用真实的移动代价去计算更好的路径。</span></p><br><h1><a name="_Toc169180975"><span lang="EN-US">4 A</span></a><span><span>算法的变种</span></span><span lang="EN-US"></span></h1><br><h2><a name="_Toc169180976"><span lang="EN-US">4.1 beam search</span></a>&nbsp;<span style="font-size: small;"><span style="font-family: 'Times New Roman';">beam search<span lang="EN-US"></span></span></span></h2><br><p class="MsoNormal"><span>在</span><span lang="EN">A<em></em></span><span>的主循环中，</span><span lang="EN">OPEN</span><span>集保存所有需要检查的结点。</span><span lang="EN">Beam Search</span><span>是</span><span lang="EN">A</span><span>算法的一个变种，这种算法限定了</span><span lang="EN">OPEN</span><span>集的尺寸。如果</span><span lang="EN">OPEN</span><span class="GramE"><span>集变得</span></span><span>过大，那些没有机会通向一条好的路径的结点将被抛弃。缺点是你必须让排序你的集合以实现这个，这限制了可供选择的数据结构。</span><span lang="EN"></span></p><br><h2><a name="_Toc169180977"><span lang="EN-US">4.2&nbsp;</span></a><span><span>迭代深化</span></span><span lang="EN-US"></span></h2><br><p class="MsoNormal"><span>迭代深化是一种在许多</span><span lang="EN">AI</span><span>算法中使用的方法，这种方法从一个近似解开始，逐渐得到更精确的解。该名称来源于游戏树搜索，需要查看前面几步（比如在象棋里），通过查看前面更多步来提高树的深度。一旦你的<span class="GramE">解不再</span>有更多的改变或者改善，就可以认为你已经得到足够好的解，当你想要进一步精确化时，它不会再有改善。在</span><span lang="EN">ID-A<em></em></span><span>中，深度是</span><span lang="EN">f</span><span>值的一个</span><span lang="EN">cutoff</span><span>。当</span><span lang="EN">f</span><span>的值太大时，结点甚至将不被考虑（例如，它不会被加入</span><span lang="EN">OPEN</span><span>集中）。第一次<span class="GramE">迭代只</span>处理很少的结点。此后每一次迭代，访问的结点都将增加。如果你发现路径有所改善，那么就继续增加</span><span lang="EN">cutoff</span><span>，否则就可以停止了。更多的细节请参考这些关于</span><span lang="EN">ID-A</span><span>的资料：</span><span lang="EN"><a href="http://www.apl.jhu.edu/~hall/AI-Programming/IDA-Star.html" target="_blank" rel="external">http://www.apl.jhu.edu/~hall/AI-Programming/IDA-Star.html</a></span><span>。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>我本人认为在游戏地图中没有太大的必要使用</span><span lang="EN">ID-A<em></em></span><span>寻路。</span><span lang="EN">ID</span><span>算法趋向于增加计算时间而减少内存需求。然而在地图路径搜索中，&ldquo;结点&rdquo;是很小的&mdash;&mdash;它们仅仅是坐标而已。我认为不保存这些结点以节省空间并不会带来多大改进。</span><span lang="EN"></span></p><br><h2><a name="_Toc169180978"><span lang="EN-US">4.3&nbsp;</span></a><span><span>动态衡量</span></span><span lang="EN-US"></span></h2><br><p class="MsoNormal"><span>在动态衡量中，你假设在开始搜索时，最重要的<span class="GramE">是讯速</span>移动到任意位置；而在搜索接近结束时，最重要的是移动到目标点。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span class="GramE"><span lang="EN">f(</span></span><span lang="EN">p) = g(p) + w(p)  h(p)</span></p><br><p class="MsoNormal"><span>启发函数中带有一个权值（</span><span lang="EN">weight</span><span>）（</span><span lang="EN">w&gt;=1</span><span>）。当你接近目标时，你降低这个权值；<span class="GramE">这降低</span>了启发函数的重要性，同时增加了路径真实代价的相对重要性。</span><span lang="EN"></span></p><br><h2><a name="_Toc169180979"><span lang="EN-US">4.4&nbsp;</span></a><span><span>带宽搜索</span></span><span lang="EN-US"></span></h2><br><p class="MsoNormal"><span>带宽搜索（</span><em><span lang="EN-US">Bandwidth Search</span></em><span>）有两个对有些人也许有用的特性。这个变种假设</span><span lang="EN">h</span><span>是过高估计的值，但不高于某个数</span><span lang="EN">e</span><span>。如果这就是你遇到的情况，那么你得到的路径的代价将不会比最佳路径的代价超过</span><span lang="EN">e</span><span>。重申一次，你的启发函数设计的越好，最终效果就越好。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>另一个特性是，你可以丢弃</span><span lang="EN">OPEN</span><span>集中的某些结点。当</span><span lang="EN">h+d</span><span>比路径的真实代价高的时候（对于某些</span><span lang="EN">d</span><span>），你可以丢弃那些</span><span lang="EN">f</span><span>值比</span><span lang="EN">OPEN</span><span>集中的最好结点的</span><span lang="EN">f</span><span>值<span class="GramE">高至少</span></span><span lang="EN">e+d</span><span>的结点。这是一个奇怪的特性。对于好的</span><span lang="EN">f</span><span>值你有一个&ldquo;范围&rdquo;（</span><span lang="EN">“band”</span><span>），任何在这个范围之外的结点都可以被丢弃掉，因为这个结点肯定不会在最佳路径上。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>好奇地（</span><span lang="EN">Curiously</span><span>），你可以对这两种特性使用不同的启发函数，而问题仍然可以得到解决。使用一个启发函数以保证你得到的路径不会太差，另一个用于检查从</span><span lang="EN">OPEN</span><span>集中去掉哪些结点。</span><span lang="EN"></span></p><br><h2><a name="_Toc169180980"><span lang="EN-US">4.5&nbsp;</span></a><span><span>双向搜索</span></span><span lang="EN-US"></span></h2><br><p class="MsoNormal"><span>与从开始点向目标点搜索不同的是，你也可以并行地进行两个搜索&mdash;&mdash;一个从开始点向目标点，另一个从目标点<span class="GramE">向开始</span>点。当它们相遇时，你将得到一条好的路径。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>这听起来是个好主意，但我不会给你讲很多内容。双向搜索的思想是，搜索过程生成了一棵在地图上散开的树。一棵大树比两棵小树差得多，所以最好是使用两棵较小的搜索树。然而我的试验表明，在</span><span lang="EN">A<em></em></span><span>中你得不到一棵树，而只是在搜索地图中当前位置附近的区域，但是又不像</span><span lang="EN">Dijkstra</span><span>算法那样散开。事实上，这就是让</span><span lang="EN">A</span><span>算法运行得如此快的原因&mdash;&mdash;无论你的路径有多长，它并不进行疯狂的搜索，除非路径是疯狂的。它只尝试搜索地图上小范围的区域。如果你的地图很复杂，双向搜索会更有用。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>面对面的方法（</span><span lang="EN">The&nbsp;</span><em><span lang="EN-US">front-to-front</span></em><span lang="EN">&nbsp;variation</span><span>）把这两种搜索结合在一起。这种算法选择一对具有最好的</span><span lang="EN-US">g(start,x) + h(x,y) + g(y,goal)</span><span>的结点，而不是选择最好的前向搜索结点&mdash;&mdash;</span><span lang="EN-US">g(start,x) + h(x,goal)</span><span>，或者最好的后向搜索结点&mdash;&mdash;</span><span lang="EN-US">g(y,goal) + h(start,y)</span><span>。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span lang="EN">Retargeting</span><span>方法不允许前向和后向搜索同时发生。它朝着某个最佳的中间结点运行前向搜索一段时间，然后再朝这个结点运行后向搜索。然后选择一个后向最佳中间结点，从前向最佳中间结点向后向最佳中间结点搜索。一直进行这个过程，直到两个中间结点碰到一块。</span><span lang="EN"></span></p><br><h2><a name="_Toc169180981"><span lang="EN-US">4.6&nbsp;</span></a><span><span>动态</span></span><span><span lang="EN-US">A<em></em></span></span><span><span>与终身计划</span></span><span><span lang="EN-US">A</span></span><span lang="EN-US"></span></h2><br><p class="MsoNormal"><span>有一些</span><span lang="EN">A<em></em></span><span>的变种允许当初始路径计算出来之后，世界发生改变。</span><span lang="EN">D</span><span>用于当你没有全局所有信息的时候。如果你没有所有的信息，</span><span lang="EN">A<em></em></span><span>可能会出错；</span><span lang="EN">D</span><span>的贡献在于，它能纠正那些错误而不用过多的时间。</span><span lang="EN">LPA<em></em></span><span>用于代价会改变的情况。在</span><span lang="EN">A</span><span>中，<span class="GramE">当地图发生</span>改变时，路径将变得无效；</span><span lang="EN">LPA<em></em></span><span>可以重新使用之前</span><span lang="EN">A</span><span>的计算结果并产生新的路径。然而，</span><span lang="EN">D<em></em></span><span>和</span><span lang="EN">LPA</span><span>都需要很多内存&mdash;&mdash;用于运行</span><span lang="EN">A<em></em></span><span>并保存它的内部信息（</span><span lang="EN">OPEN</span><span>和</span><span lang="EN">CLOSED</span><span>集，路径树，</span><span lang="EN">g</span><span>值），<span class="GramE">当地图发生</span>改变时，</span><span lang="EN">D</span><span>或者</span><span lang="EN">LPA<em></em></span><span>会告诉你，是否需要就地图的改变对路径作调整。在一个有许多运动着的物体的游戏中，你经常不希望保存所有这些信息，所以</span><span lang="EN">D</span><span>和</span><span lang="EN">LPA<em></em></span><span>在这里并不适用。它们是为机器人技术而设计的，这种情况下只有一个机器人&mdash;&mdash;你不需要为别的机器人寻路而重用内存。如果你的游戏只有一个或者少数几个物体，你可以研究一下</span><span lang="EN">D</span><span>或者</span><span lang="EN">LPA<em></em></span><span>。</span><span lang="EN"></span></p><br><ul type="disc"><br><li class="MsoNormal"><span lang="EN"><a href="http://www.frc.ri.cmu.edu/~axs/dynamic_plan.html" target="_blank" rel="external"><span>Overview of D</span></a></span><span>（</span><span lang="EN"><a href="http://www.frc.ri.cmu.edu/~axs/dynamic_plan.html" target="_blank" rel="external">http://www.frc.ri.cmu.edu/~axs/dynamic_plan.html</a></span><span>）</span><span lang="EN"></span></li><br><li class="MsoNormal"><span lang="EN"><a href="http://www.frc.ri.cmu.edu/~axs/doc/icra94.ps" target="_blank" rel="external"><span>D<em> Paper 1</em></span></a></span><span>（</span><span lang="EN">http:// <a href="http://www.frc.ri.cmu.edu/~axs/doc/icra94.ps" target="_blank" rel="external">http://www.frc.ri.cmu.edu/~axs/doc/icra94.ps</a></span><span>）</span><span lang="EN"></span></li><br><li class="MsoNormal"><span lang="EN"><a href="http://www.frc.ri.cmu.edu/~axs/doc/ijcai95.ps" target="_blank" rel="external"><span>D Paper 2</span></a></span><span>（</span><span lang="EN">http:// <a href="http://www.frc.ri.cmu.edu/~axs/doc/ijcai95.ps" target="_blank" rel="external">http://www.frc.ri.cmu.edu/~axs/doc/ijcai95.ps</a></span><span>）</span><span lang="EN"></span></li><br><li class="MsoNormal"><span lang="EN"><a href="http://idm-lab.org/project-a.html" target="_blank" rel="external"><span>Lifelong planning overview</span></a></span><span>（</span><span lang="EN"><a href="http://idm-lab.org/project-a.html" target="_blank" rel="external">http://idm-lab.org/project-a.html</a></span><span>）</span><span lang="EN"></span></li><br><li class="MsoNormal"><span lang="EN"><a href="http://csci.mrs.umn.edu/UMMCSciWiki/pub/CSci3903s03/KellysPaper/seminar.pdf" target="_blank" rel="external"><span>Lifelong planning paper (PDF)</span></a></span><span>（</span><span lang="EN"><a href="http://csci.mrs.umn.edu/UMMCsciwiki/pub/" target="_blank" rel="external"><span>http://csci.mrs.umn.edu/UMMCsciwiki/pub/</span></a>&nbsp;Csci3903s03/KellysPaper/seminar.pdf</span><span>）</span><span lang="EN"></span></li><br><li class="MsoNormal"><span lang="EN"><a href="http://idm-lab.org/applet.html" target="_blank" rel="external"><span>Lifelong planning A<em> applet</em></span></a></span><span>（</span><span lang="EN"><a href="http://idm-lab.org/applet.html" target="_blank" rel="external">http://idm-lab.org/applet.html</a></span><span>）</span></li><br></ul><br><h1><a name="_Toc169180982"><span lang="EN-US">5&nbsp;</span></a><span><span>处理运动障碍物</span></span><span lang="EN-US"></span></h1><br><p class="MsoNormal"><span>一个路径搜索算法沿着固定障碍物计算路径，但是当障碍物会运动时情况又怎样？当一个物体到达一个特写的位置，原来的障碍物也许不再在那儿了，或者一个新的障碍物也许到达那儿。处理该问题的一个方法是放弃路径搜索而使用运动算法（</span><span lang="EN">movement algorithms</span><span>）替代，这就不能</span><span lang="EN">look far ahead</span><span>；这种方法会在后面的部分中讨论。这一部分将对路径搜索方法进行修改从而解决运动障碍物的问题。</span><span lang="EN"></span></p><br><h2><a name="_Toc169180983"><span lang="EN-US">5.1&nbsp;</span></a><span><span>重新计算路径</span></span><span lang="EN-US"></span></h2><br><p class="MsoNormal"><span>当时间渐渐过去，我们希望游戏世界有所改变。以前搜索到的一条路径到现在也许不再是最佳的了。对旧的路径用新的信息进行更新是有价值的。以下规则可以用于决定什么时候需要重新计算路径：</span><span lang="EN"></span></p><br><ul type="disc"><br><li class="MsoNormal"><span>每</span><span lang="EN">N</span><span>步：这保证用于计算路径的信息<span class="GramE">不会旧</span>于</span><span lang="EN">N</span><span>步。</span><span lang="EN"></span></li><br><li class="MsoNormal"><span>任何可以使用额外的</span><span lang="EN">CPU</span><span>时间的时候：这允许动态调整路径的性质；在物体数量多时，或者运行游戏的机器比较慢时，每个物体对</span><span lang="EN">CPU</span><span>的使用可得到减少。</span><span lang="EN"></span></li><br><li class="MsoNormal"><span>当物体拐弯或者跨越一个导航点（</span><span lang="EN">waypoint</span><span>）的时候。</span><span><span lang="EN"></span></span></li><br><li class="MsoNormal"><span>当物体附近的世界改变了的时候。</span><span lang="EN"></span></li><br></ul><br><p class="MsoNormal"><span>重计算路径的主要缺点是许多路径信息被丢弃了。例如，如果路径是</span><span lang="EN">100</span><span>步长，每</span><span lang="EN">10</span><span>步重新计算一次，路径的总步数将是</span><span lang="EN">100+90+80+70+60+50+40+30+20+10 = 550</span><span>。对</span><span lang="EN">M</span><span>步长的路径，大约需要计算</span><span lang="EN">M^2</span><span>步。因此如果你希望有许多很长的路径，重计算不是个好主意。重新使用路径信息比丢弃它更好。</span><span lang="EN"></span></p><br><h2><a name="_Toc169180984"><span lang="EN-US">5.2&nbsp;</span></a><span><span>路径拼接</span></span><span lang="EN-US"></span></h2><br><p class="MsoNormal"><span>当一条路径需要被重新计算时，意味着世界正在改变。对于一个正在改变的世界，对地图中当前邻近的区域总是比对远处的区域了解得更多。因此，我们应该集中于在附近寻找好的路径，同时假设远处的路径不需要重新计算，除非我们接近它。与重新计算整个路径不同，我们可以重新计算路径的前</span><span lang="EN">M</span><span>步：</span><span lang="EN"></span></p><br><ol type="1"><br><li class="MsoNormal"><span>令</span><span lang="EN">p[1]..p[N]</span><span>为路径（</span><span lang="EN">N</span><span>步）的剩余部分</span><span lang="EN"></span></li><br><li class="MsoNormal"><span>为</span><span lang="EN">p[1]</span><span>到</span><span lang="EN">p[M]</span><span>计算一条新的路径</span><span lang="EN"></span></li><br><li class="MsoNormal"><span>把这条新路径拼接（</span><span lang="EN">Splice</span><span>）到旧路径：把</span><span lang="EN">p[1]..p[M]</span><span>用新的路径值代替</span><span lang="EN"></span></li><br></ol><br><p class="MsoNormal"><img src="http://theory.stanford.edu/~amitp/GameProgramming/mtn_path.png" alt=""></p><br><p class="MsoNormal" align="center"><span lang="EN"></span></p><br><p class="MsoNormal"><span>因为</span><span lang="EN">p[1]</span><span>和</span><span lang="EN">p[M]</span><span>比分开的</span><span lang="EN">M</span><span>步小（原文：</span><span lang="EN">Since p[1] and p[M] are fewer than M steps apart</span><span>），看起来新路径不会很长。不幸的是，新的路径也许很长而且不够好。上面的图显示了这种情况。最初的红色路径是</span><span lang="EN">1-2-3-4</span><span>，褐色的是障碍物。如果我们到达</span><span lang="EN">2</span><span>并且发现从</span><span lang="EN">2</span><span>到达</span><span lang="EN">3</span><span>的路径被封锁了，路径拼接技术会把</span><span lang="EN">2-3</span><span>用</span><span lang="EN">2-5-3</span><span>取代，结果是物体沿着路径</span><span lang="EN">1-2-5-3-4</span><span>运动。我们可以看到这不是一条好的路径，蓝色的路径</span><span lang="EN">1-2-5-4</span><span>是一条更好的路径。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>通常可以通过查看新路径的长度检测到坏的路径。如果这严格大于</span><span lang="EN">M</span><span>，就可能是不好的。一个简单的解决方法是，为搜索算法设置一个最大路径长度。如果找不到一条短的路径，算法返回错误代码；这种情况下，用重计算路径取代路径拼接，从而得到路径</span><span lang="EN">1-2-5-4.</span><span>。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>对于其它情况，对于</span><span lang="EN">N</span><span>步的路径，路径拼接会计算</span><span lang="EN">2N</span><span>或者</span><span lang="EN">3N</span><span>步，这取决于拼接新路径的频率。对于对世界的改变作反应的能力而言，这个代价是相当低的。令人吃惊的是这个代价和拼接的步数</span><span lang="EN">M</span><span>无关。</span><span lang="EN">M</span><span>不影响</span><span lang="EN">CPU</span><span>时间，而控制了响应和路径质量的折衷。如果</span><span lang="EN">M</span><span>太大，物体的移动将不能快速对地图的改变<span class="GramE">作出</span>反应。如果</span><span lang="EN">M</span><span>太小，拼接的路径可能太短以致不能正确地绕过障碍物；许多不理想的路径（如</span><span lang="EN">1-2-5-3-4</span><span>）将被找到。尝试不同的</span><span lang="EN">M</span><span>值和不同的拼接标准</span><span lang="EN">(</span><span>如每</span><span lang="EN">3/4&nbsp;</span><em><span lang="EN-US">M</span></em><span>步</span><span lang="EN">)</span><span>，看看哪一种情况对你的地图最合适。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>路径拼接确实比重计算路径要快，但它不能对路径的改变<span class="GramE">作出</span>很好的反应。经常可以发现这种情况并用路径重计算来取代。也可以调整一些变量，如</span><span lang="EN">M</span><span>和寻找新路径的时机，所以可以对该方法进行调整</span><span lang="EN">(</span><span>甚至在运行时</span><span lang="EN">)</span><span>以用于不同的情况。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span lang="EN">Note</span><span>：</span><span lang="EN">Bryan Stout&nbsp;</span><span>有两个算法，</span><span lang="EN">Patch-One</span><span>和</span><span lang="EN">Patch-All</span><span>，他从路径拼接中得到灵感，并在实践中运行得很好。他出席了</span><span lang="EN"><a href="https://www.cmpevents.com/GD07/a.asp?option=C&amp;V=11&amp;SessID=4608" target="_blank" rel="external"><span>GDC 2007</span></a></span><span>（</span><span lang="EN"><a href="https://www.cmpevents.com/GD07/a.asp?option" target="_blank" rel="external">https://www.cmpevents.com/GD07/a.asp?option</a> =C &amp;V=11&amp; SessID=4608</span><span>）；一旦他把资料放在网上，我将链接过去。</span><span lang="EN"></span></p><br><p class="MsoNormal"><strong><span lang="EN-US">Implementation Note</span></strong><strong><span>：</span><span lang="EN-US"></span></strong></p><br><p class="MsoNormal"><span>反向保存路径，从而删除路径的开始部分并用不同长度的新路径拼接将更容易，因为这两个操作都将在数组的末尾进行。本质上你可以把这个数组看成是堆栈因为顶部的元素总是下一个要使用的。</span><span lang="EN"></span></p><br><h2><a name="_Toc169180985"><span lang="EN-US">5.3&nbsp;</span></a><span><span>监视地图变化</span></span><span lang="EN-US"></span></h2><br><p class="MsoNormal"><span>与间隔一段时间重计算全部或部分路径不同的是，可以让地图的改变触发一次重计算。地图可以分成区域，每个物体都可以对某些区域感兴趣（可以是包含部分路径的所有区域，也可以只是包含部分路径的邻近区域）。当一个障碍物进入或者离开一个区域，该区域将被标识为已改变，所有对该区域感兴趣的物体都被通知到，所以路径将被重新计算以适应障碍物的改变。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>这种技术有许多变种。例如，可以每隔一定时间通知物体，而不是立即通知物体。多个改变可以成组地触发一个通知，因此避免了额外的重计算。另一个例子是，让物体检查区域，而不是让区域通知物体。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>监视地图变化允许当障碍物不改变时物体避免重计算路径，所以当你有许多区域并不经常改变时，考虑这种方法。</span><span lang="EN"></span></p><br><h2><a name="_Toc169180986"><span lang="EN-US">5.4&nbsp;</span></a><span><span>预测障碍物的运动</span></span><span lang="EN-US"></span></h2><br><p class="MsoNormal"><span>如果障碍物的运动可以预测，就能为路径搜索考虑障碍物的未来位置。一个诸如</span><span lang="EN">A</span><span>的算法有一个代价函数用以检查穿过地图上一点的代价有多难。</span><span lang="EN">A<em></em></span><span>可以被改进从而知道到达一点的时间需求（通过当前路径长度来检查），而现在则轮到代价函数了。代价函数可以考虑时间，并用预测的障碍物位置检查在某个时刻地图某个位置是否可以通过。这个改进不是完美的，然而，因为它并不考虑在某个点等待障碍物自动离开的可能性，同时</span><span lang="EN">A</span><span>并不区分到达相同目的地的不同的路径，而是针对不同的目的地，所以还是可以接受的。</span><span lang="EN"></span></p><br><h1><a name="_Toc169180987"><span lang="EN-US">6&nbsp;</span></a><span><span>预计算路径的空间代价</span></span><span lang="EN-US"></span></h1><br><p class="MsoNormal"><span>有时，路径计算的限制因素不是时间，而是用于数以百计的物体的存储空间。路径搜索器需要空间以运行算法和保存路径。算法运行所需的临时空间（在</span><span lang="EN">A*</span><span>中是</span><span lang="EN">OPEN</span><span>和</span><span lang="EN">CLOSED</span><span>集）通常比保存结果路径的空间大许多。通过限制在一定的时间计算一条路径，可以把临时空间数量最小化。另外，为</span><span lang="EN">OPEN</span><span>和</span><span lang="EN">CLOSED</span><span class="GramE"><span>集所选择</span></span><span>的数据结构的不同，最小<span class="GramE">化临时</span>空间的程度也有很大的不同。这一部分聚集于优化用于计算路径的空间代价。</span><span lang="EN"></span></p><br><h2><a name="_Toc169180988"><span lang="EN-US">6.1&nbsp;</span></a><span><span>位置</span></span><span><span lang="EN-US">VS</span></span><span><span>方向</span></span><span lang="EN-US"></span></h2><br><p class="MsoNormal"><span>一条路径可以<span class="GramE">用位置</span>或者方向来表示。位置需要更多的空间，但是有一个优点，易于查询路径中的任意位置或者方向而不用沿着路径移动。当保存方向时，只有方向容易被查询；只有沿着整个路径移动才能查询位置。在<span class="GramE">一个典形的</span>网格地图中，位置可以被保存为两个</span><span lang="EN">16</span><span>位整数，每走一步是</span><span lang="EN">32</span><span>位。而方向是很少的，因此用极少的空间就够了。如果物体只能沿着四个方向移动，每一步用两位就够了；如果物体能沿着</span><span lang="EN">6</span><span>个或者</span><span lang="EN">8</span><span>个方向移动，每一步也只需要三位。这些对于保存路径中的位置都有明显的空间节省。</span><span lang="EN">Hannu Kankaanpaa</span><span>指出可以进一步减少空间需求，那就是保存相对方向（右旋</span><span lang="EN">60</span><span>度）而不是绝对方向（朝北走）。有些相对方向对某些物体来说意义不大。比如，如果你的物体朝北移动，那么下一步朝南移动的可能性很小。在只有六种方向的游戏中，你只有五个有意义的方向。在某些地图中，也许只有三个方向（直走，左旋</span><span lang="EN">60</span><span>度，右旋</span><span lang="EN">60</span><span>度）有意义，而其它地图中，右旋</span><span lang="EN">120</span><span>度是有效的（比如，沿着陡峭的山坡走之字形的路径时）。</span><span lang="EN"></span></p><br><h2><a name="_Toc169180989"><span lang="EN-US">6.2&nbsp;</span></a><span><span>路径压缩</span></span><span lang="EN-US"></span></h2><br><p class="MsoNormal"><span>一旦找到一条路径，可以对它进行压缩。可以用一个普通的压缩算法，但这里不进行讨论。使用特定的压缩算法可以缩小路径的存储，无论它是基于位置的还是基于方向的。在做决定之前，考察你的游戏中的路径以确定哪种压缩效果最好。另外还要考虑实现和调试，代码量，</span><span lang="EN">and whether it really matters.</span><span>如果你有</span><span lang="EN">300</span><span>个物体并且在同一时刻只有</span><span lang="EN">50</span><span>个在移动，同时路径比较短（</span><span lang="EN">100</span><span>步），内存总需求大概只有不到</span><span lang="EN">50k</span><span>，总之，没有必要担心压缩的效果。</span><span lang="EN"></span></p><br><h3><a name="_Toc169180990"><span lang="EN-US">6.2.1&nbsp;</span></a><span><span>位置存储</span></span><span lang="EN-US"></span></h3><br><p class="MsoNormal"><span>在障碍物比地形对路径搜索影响更大的地图中，路径中有大部分是直线的。如果是这种情况，那么路径只需要包含直线部分的终止点（有时叫</span><span lang="EN">waypoints</span><span>）。此时移动过程将包含检查下一结点和沿着直线向前移动。</span><span lang="EN"></span></p><br><h3><a name="_Toc169180991"><span lang="EN-US">6.2.2&nbsp;</span></a><span><span>方向存储</span></span><span lang="EN-US"></span></h3><br><p class="MsoNormal"><span>保存方向时，有一种情况是同一个方向保存了很多次。可以用简单的方法节省空间。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>一种方法是保存方向以及<span class="GramE">朝着该</span>方向移动的次数。和位置存储的优化不同，当一个方向并不是移动很多次时，这种优化的效果反而不好。同样的，对于那些可以进行位置压缩的直线来说，方向压缩是行不通的，因为这条直线可能没有和正在移动的方向关联。通过相对方向，你可以把&ldquo;继续前进&rdquo;当作可能的方向排除掉。</span><span lang="EN">Hannu Kankaanpaa</span><span>指出，在一个八方向地图中，你可以去掉前，后，以及向左和向右</span><span lang="EN">135</span><span>度（假设你的地图允许这个），然后你可以仅用两个比特保存每个方向。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>另一种保存路径的方法是变长编码。这种想法是使用一个简单的比特（</span><span lang="EN">0</span><span>）保存最一般的步骤：向前走。使用一个&ldquo;</span><span lang="EN">1</span><span>&rdquo;表示拐弯，后边再跟几个比特表示拐弯的方向。在一个<span class="GramE">四方向</span>地图中，你只能左转和右转，因此可以用&ldquo;</span><span lang="EN">10</span><span>&rdquo;表示左转，&ldquo;</span><span lang="EN">11</span><span>&rdquo;表示右转。</span><span lang="EN"></span></p><br><p class="MsoNormal"><span>变长编码比</span><span lang="EN">run length encoding</span><span>更一般，并且可以压缩得更好，但对于较长的直线路径则不然。序列（向北直走</span><span lang="EN">6</span><span>步，左转，直走</span><span lang="EN">3</span><span>步，右转，直走</span><span lang="EN">5</span><span>步，左转，直走</span><span lang="EN">2</span><span>步）用</span><span lang="EN">run length encoding</span><span>表示是</span><span lang="EN">[(NORTH, 6), (WEST, 3), (NORTH, 5), (WEST, 2)]</span><span>。如果每个方向用</span><span lang="EN">2</span><span>比特，每个距离用</span><span lang="EN">8</span><span>比特，保存这条路径需要</span><span lang="EN">40</span><span>比特。而对于变长编码，你用</span><span lang="EN">1</span><span>比特表示每一步，</span><span lang="EN">2</span><span>比特表示拐弯&mdash;&mdash;</span><span lang="EN">[NORTH 0 0 0 0 0 0 10 0 0 0 11 0 0 0 0 0 10 0 0]</span><span>&mdash;&mdash;一共</span><span lang="EN">24</span><span>比特。如果初始方向和每次拐弯对应</span><span lang="EN">1</span><span>步，则每次拐弯都节省了一个比特，结果只需要</span><span lang="EN">20</span><span>比特保存这条路径。然而，用变长编码保存更长的路径时需要更多的空间。序列</span><span lang="EN">(</span><span>向北直走</span><span lang="EN">200</span><span>步</span><span lang="EN">)</span><span>用</span><span lang="EN">run length encoding</span><span>表示是</span><span lang="EN">[(NORTH, 200)]</span><span>，总共需要</span><span lang="EN">10</span><span>比特。用变长编码表示同样的序列则是</span><span lang="EN">[NORTH 0 0 …]</span><span>，一共需要</span><span lang="EN">202</span><span>比特。</span><span lang="EN"></span></p><br><h2><a name="_Toc169180992"><span lang="EN-US">6.3&nbsp;</span></a><span><span>计算导航点</span></span><span lang="EN-US"></span></h2><br><p class="MsoNormal"><span>一个导航点（</span><span lang="EN">waypoint</span><span>）是路径上的一个结点。与保存路径上的每一步不同，在进行路径搜索之后，一个后处理（</span><span lang="EN">post-processing</span><span>）的步骤可能会把若干步</span><span lang="EN">collapse</span><span>（译者：不好翻译，保留原单词）为一个简单的导航点，这经常发生在路径上那些方向发生改变的地方，或者在一个重要的（</span><span lang="EN">major</span><span>）位置如城市。然后运动算法将在两个导航点之间运行。</span><span lang="EN"></span></p><br><h2><a name="_Toc169180993"><span lang="EN-US">6.4&nbsp;</span></a><span><span>极限路径长度</span></span><span lang="EN-US"></span></h2><br><p class="MsoNormal"><span>当地图中的条件或者秩序会发生改变时，保存一条长路径是没有意义的，因为在从某些点开始，后边的路径已经没有用了。每个物体都可以保存路径开始时的特定几步，然后当路径已经没用时重新计算路径。这种方法虑及了（</span><span lang="EN">allows for</span><span>）对每个物体使用数据的总量的管理。</span><span lang="EN"></span></p><br><h2><a name="_Toc169180994"><span lang="EN-US">6.5&nbsp;</span></a><span><span>总结</span></span><span lang="EN-US"></span></h2><br><p class="MsoNormal"><span>在游戏中，路径潜在地花费了许多存储空间，特别是当路径很长并且有很多物体需要寻路时。路径压缩，导航点和</span><span lang="EN">beacons</span><span>通过把多个步骤保存为一个较小数据从而减少了空间需求。</span><span lang="EN">Waypoints rely on straight-line segments being common so that we have to store only the endpoints, while beacons rely on there being well-known paths calculated beforehand between specially marked places on the map.</span><span>（译者：此处不好翻译，暂时保留原文）如果路径仍然用了许多存储空间，可以限制路径长度，这就回到了经典的时间</span><span lang="EN">-</span><span>空间折衷法：为了节省空间，信息可以被丢弃，稍后才重新计算它。</span></p><br><p></p><br></div>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/模板/" rel="tag">#模板</a>
+          
+            <a href="/tags/分享/" rel="tag">#分享</a>
+          
+            <a href="/tags/A/" rel="tag">#A*</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/04/12/bzoj4325斗地主/" rel="next" title="bzoj4325斗地主">
+                <i class="fa fa-chevron-left"></i> bzoj4325斗地主
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/14/转：堪称最好的A星算法/" rel="prev" title="转：堪称最好的A*算法">
+                转：堪称最好的A*算法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/04/14/转：堪称最好的A-算法/"
+           data-title="转：堪称最好的A*算法" data-url="http://zhaoleyi.github.io/2016/04/14/转：堪称最好的A-算法/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://7xrxql.com1.z0.glb.clouddn.com/e6dfa219ebc4b7458b83ba58cefc1e178b8215f7.jpg"
+               alt="Leo Zhao" />
+          <p class="site-author-name" itemprop="name">Leo Zhao</p>
+          <p class="site-description motion-element" itemprop="description">浪什么浪，再浪连鸡牌都没有</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zhaoleyi/zhaoleyi.github.io.git" target="_blank">
+                  
+                    <i class="fa fa-globe"></i> github
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/1657975810/home?wvr=5" target="_blank">
+                  
+                    <i class="fa fa-globe"></i> 新浪微博
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:zhaoleyi20010403@126.com" target="_blank">
+                  
+                    <i class="fa fa-globe"></i> 126邮箱
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+            <div class="links-of-blogroll-title">友链</div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://redbowtie.github.io" target="_blank">帅哥</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://littlequentin.github.io" target="_blank">家悦神犇</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://the-lost-star.blog.163.com/" target="_blank">主席神犇</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.mregg.top" target="_blank">hcz神犇</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wyxoi.github.io" target="_blank">wyx神犇</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://stalker-blog.apphb.com/" target="_blank">大圣神犇</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://hzq84621.is-programmer.com/" target="_blank">比♂利♂黄</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://vanfei.is-programmer.com/" target="_blank">费老板</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://aftc.github.io/" target="_blank">神犇狄拉克</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jytnb1.blog.163.com" target="_blank">AK爷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.sina.com.cn/u/1943318733" target="_blank">范寒威</a>
+                </li>
+              
+            </ul>
+          
+        </div>
+		
+		
+		<script>
+			$(function() {
+				var links = $(".links-of-blogroll-item");
+				var s = "<div style=\"display: inline-block; vertical-align: top;\"><ul class=\"links-of-blogroll-list\" /></div>";
+				var arr = [$(s), $(s), $(s)];
+				var x = 0;
+				for (var i = 0; i < links.length; i++)
+				{
+					arr[x].find("ul").append(links[i]);
+					x++;
+					x %= 3;
+				}
+				var div = $("<div></div>");
+				for (var i = 0; i < 3; i++) div.append(arr[i]);
+				var ul = $(".links-of-blogroll-list");
+				ul.before(div);
+				ul.hide();
+			});
+		</script>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">1 导言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 Dijkstra算法与最佳优先搜索</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 A算法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text">2 启发式算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 A对启发式函数的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 速度还是精确度？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 衡量单位</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 精确的启发式函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">2.4.1.</span> <span class="nav-text">2.4.1 预计算的精确启发式函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">2.4.2.</span> <span class="nav-text">2.4.2 线性精确启发式算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 网格地图中的启发式算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">2.5.1.</span> <span class="nav-text">2.5.1 曼哈顿距离</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">2.5.2.</span> <span class="nav-text">2.5.2 对角线距离</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">2.5.3.</span> <span class="nav-text">2.5.3 欧几里得距离</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">2.5.4.</span> <span class="nav-text">2.5.4 平方后的欧几里得距离</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">2.5.5.</span> <span class="nav-text">2.5.5 Breaking ties Breaking ties</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">2.5.6.</span> <span class="nav-text">2.5.6 区域搜索</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text">3 Implementation notes</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 概略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 源代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 集合的表示</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.3.1.</span> <span class="nav-text">3.3.1 未排序数组或链表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.3.2.</span> <span class="nav-text">3.3.2 排序数组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.3.3.</span> <span class="nav-text">3.3.3 排序链表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.3.4.</span> <span class="nav-text">3.3.4 排序跳表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.3.5.</span> <span class="nav-text">3.3.5 索引数组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.3.6.</span> <span class="nav-text">3.3.6 哈希表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.3.7.</span> <span class="nav-text">3.3.7 二元堆</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.3.8.</span> <span class="nav-text">3.3.8 伸展树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.3.9.</span> <span class="nav-text">3.3.9 HOT队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.3.10.</span> <span class="nav-text">3.3.10 比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.3.11.</span> <span class="nav-text">3.3.11 混合实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 与游戏循环的交互</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.4.1.</span> <span class="nav-text">3.4.1 提前退出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.4.2.</span> <span class="nav-text">3.4.2 中断算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.4.3.</span> <span class="nav-text">3.4.3 组运动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.4.4.</span> <span class="nav-text">3.4.4 细化</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#undefined"><span class="nav-number">4.</span> <span class="nav-text">4 A算法的变种</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 beam search beam search</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 迭代深化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 动态衡量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">4.4.</span> <span class="nav-text">4.4 带宽搜索</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">4.5.</span> <span class="nav-text">4.5 双向搜索</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">4.6.</span> <span class="nav-text">4.6 动态A与终身计划A</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#undefined"><span class="nav-number">5.</span> <span class="nav-text">5 处理运动障碍物</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 重新计算路径</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 路径拼接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">5.3.</span> <span class="nav-text">5.3 监视地图变化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">5.4.</span> <span class="nav-text">5.4 预测障碍物的运动</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#undefined"><span class="nav-number">6.</span> <span class="nav-text">6 预计算路径的空间代价</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">6.1.</span> <span class="nav-text">6.1 位置VS方向</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">6.2.</span> <span class="nav-text">6.2 路径压缩</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">6.2.1.</span> <span class="nav-text">6.2.1 位置存储</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">6.2.2.</span> <span class="nav-text">6.2.2 方向存储</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">6.3.</span> <span class="nav-text">6.3 计算导航点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">6.4.</span> <span class="nav-text">6.4 极限路径长度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">6.5.</span> <span class="nav-text">6.5 总结</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Leo Zhao</span>
+</div>
+
+<div class="footer-info">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="footer-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+<br />
+
+<div class="footer-info">
+<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+</div>
+
+<div class="footer-info">
+总字数<span class="post-count">52.1k</span>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"zhaoleyi"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+
+</body>
+</html>

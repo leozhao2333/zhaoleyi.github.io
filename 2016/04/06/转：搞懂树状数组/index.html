@@ -116,10 +116,8 @@
   <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
 
 
-  <title> 转：搞懂树状数组 | Leo Zhao 's blog </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
-</head>
-
-<script>
+  <title> 转：搞懂树状数组 | Leo Zhao 's blog </title>
+  <script>
 var _hmt = _hmt || [];
 (function() {
   var hm = document.createElement("script");
@@ -128,7 +126,8 @@ var _hmt = _hmt || [];
   s.parentNode.insertBefore(hm, s);
 })();
 </script>
-
+<script type="text/javascript" src="http://api.hitokoto.us/rand?encode=js&charset=utf-8"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="">
 
@@ -340,9 +339,9 @@ var _hmt = _hmt || [];
 <p>有了上面的基础，说求和就比较简单了。比如求0001～0110的和就直接c[0100]+c[0110]，分析方法与上面的恰好逆过来，而且写法也是逆过来的，具体就不累述了：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">int</span> <span class="title">read</span><span class="params">(<span class="keyword">int</span> k)</span><span class="comment">//1~k的区间和  </span></span><br><span class="line"></span>&#123;  </span><br><span class="line">    <span class="keyword">int</span> sum=<span class="number">0</span>;  </span><br><span class="line">    <span class="keyword">while</span>(k)  </span><br><span class="line">    &#123;  </span><br><span class="line">        sum+=tree[k];  </span><br><span class="line">        k-=k&amp;-k;  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="keyword">return</span> sum;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h2 id="总结一下吧"><a href="#总结一下吧" class="headerlink" title="总结一下吧"></a>总结一下吧</h2><p>首先，明白树状数组所白了是按照二分对数组进行分组；维护和查询都是O(lgn)的复杂度，复杂度取决于最坏的情况，也是O(lgn);lowbit这里只是一个技巧，关键在于明白c数组的构成规律;分析的过程二进制一定要深入人心，当作心目中的十进制。</p>
 
+		<div id="hitokoto"><script>hitokoto()</script></div>
       
     </div>
-
     <div>
       
         

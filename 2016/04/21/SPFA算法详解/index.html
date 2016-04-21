@@ -1,0 +1,951 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta name="baidu-site-verification" content="wWZWFaaBUR" />
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="变强,分享," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="现在是2016年4月21日，今天我学习了不少奇奇怪怪的算法，同时还为我的博客增加了mathJax支持。此文是一篇关于SPFA算法的归纳，部分内容转载，不喜勿喷">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SPFA算法详解">
+<meta property="og:url" content="http://zhaoleyi.github.io/2016/04/21/SPFA算法详解/index.html">
+<meta property="og:site_name" content="Leo Zhao 's blog">
+<meta property="og:description" content="现在是2016年4月21日，今天我学习了不少奇奇怪怪的算法，同时还为我的博客增加了mathJax支持。此文是一篇关于SPFA算法的归纳，部分内容转载，不喜勿喷">
+<meta property="og:image" content="http://image67.360doc.com/DownloadImg/2013/12/0819/37315024_1.png">
+<meta property="og:image" content="http://image67.360doc.com/DownloadImg/2013/12/0819/37315024_2.jpg">
+<meta property="og:image" content="http://image67.360doc.com/DownloadImg/2013/12/0819/37315024_3.jpg">
+<meta property="og:image" content="http://image67.360doc.com/DownloadImg/2013/12/0819/37315024_4.jpg">
+<meta property="og:image" content="http://image67.360doc.com/DownloadImg/2013/12/0819/37315024_5.jpg">
+<meta property="og:image" content="http://image67.360doc.com/DownloadImg/2013/12/0819/37315024_6.jpg">
+<meta property="og:image" content="http://image67.360doc.com/DownloadImg/2013/12/0819/37315024_7.jpg">
+<meta property="og:image" content="http://image67.360doc.com/DownloadImg/2013/12/0819/37315024_8.jpg">
+<meta property="og:image" content="http://image67.360doc.com/DownloadImg/2013/12/0819/37315024_9.jpg">
+<meta property="og:image" content="http://image67.360doc.com/DownloadImg/2013/12/0819/37315024_9.jpg">
+<meta property="og:updated_time" content="2016-04-21T07:37:55.735Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SPFA算法详解">
+<meta name="twitter:description" content="现在是2016年4月21日，今天我学习了不少奇奇怪怪的算法，同时还为我的博客增加了mathJax支持。此文是一篇关于SPFA算法的归纳，部分内容转载，不喜勿喷">
+<meta name="twitter:image" content="http://image67.360doc.com/DownloadImg/2013/12/0819/37315024_1.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+    
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  <title> SPFA算法详解 | Leo Zhao 's blog </title>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?e4610b3b6fbf0f21c2c2f15e0e538b83";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script type="text/javascript" src="http://api.hitokoto.us/rand?encode=js&charset=utf-8"></script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="">
+
+  
+
+
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-76305073-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Leo Zhao 's blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'fSYqaVJkH2NpsCK6_3xS','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                SPFA算法详解
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-04-21T15:28:41+08:00" content="2016-04-21">
+              2016-04-21
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/04/21/SPFA算法详解/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/04/21/SPFA算法详解/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>现在是2016年4月21日，今天我学习了不少奇奇怪怪的算法，同时还为我的博客增加了mathJax支持。此文是一篇关于SPFA算法的归纳，部分内容转载，不喜勿喷<br><a id="more"></a><br>                                    </p><p>适用范围：给定的图存在负权边，这时类似Dijkstra等算法便没有了用武之地，而Bellman-Ford算法的复杂度又过高，SPFA算法便派上用场了。 我们约定有向加权图G不存在负权回路，即最短路径一定存在。当然，我们可以在执行该算法前做一次拓扑排序，以判断是否存在负权回路，但这不是我们讨论的重点。<br><br></p><p></p>
+<p></p><p>算法思想：我们用数组d记录每个结点的最短路径估计值，用邻接表来存储图G。我们采取的方法是动态逼近法：设立一个先进先出的队列用来保存待优化的结点，优化时每次取出队首结点u，并且用u点当前的最短路径估计值对离开u点所指向的结点v进行松弛操作，如果v点的最短路径估计值有所调整，且v点不在当前的队列中，就将v点放入队尾。这样不断从队列中取出结点来进行松弛操作，直至队列空为止<br><br></p><p></p>
+<p></p><p>&nbsp;</p><p></p>
+<p></p><p>期望的时间复杂度O(ke)， 其中k为所有顶点进队的平均次数，可以证明k一般小于等于2。<br><br></p><p></p>
+<p></p><p>&nbsp;</p><p></p>
+<p></p><p>实现方法：</p><p></p>
+<p></p><p>　　建立一个队列，初始时队列里只有起始点，再建立一个表格记录起始点到所有点的最短路径（该表格的初始值要赋为极大值，该点到他本身的路径赋为0）。然后执行松弛操作，用队列里有的点作为起始点去刷新到所有点的最短路，如果刷新成功且被刷新点不在队列中则把该点加入到队列最后。重复执行直到队列为空。</p><p></p>
+<p></p><p>判断有无负环：<br><br>　　如果某个点进入队列的次数超过N次则存在负环（SPFA无法处理带负环的图）</p><p></p>
+<p></p><p>&nbsp;</p><p></p>
+<p></p><p><br><br><img alt="" src="http://image67.360doc.com/DownloadImg/2013/12/0819/37315024_1.png"></p><p></p>
+<p></p><p>&nbsp;</p><p></p>
+<p></p><p>&nbsp;</p><p></p>
+<p></p><p>&nbsp;</p><p></p>
+<p></p><p>首先建立起始点a到其余各点的<br><br>最短路径表格</p><p></p>
+<p></p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img alt="" src="http://image67.360doc.com/DownloadImg/2013/12/0819/37315024_2.jpg"></p><p></p>
+<p></p><p>首先源点a入队，当队列非空时：<br><br>　１、队首元素（a）出队，对以a为起始点的所有边的终点依次进行松弛操作（此处有b,c,d三个点），此时路径表格状态为：</p><p></p>
+<p></p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; <img alt="" src="http://image67.360doc.com/DownloadImg/2013/12/0819/37315024_3.jpg"></p><p></p>
+<p></p><p>在松弛时三个点的最短路径估值变小了，而这些点队列中都没有出现，这些点<br><br>需要入队，此时，队列中新入队了三个结点b,c,d</p><p></p>
+<p></p><p>队首元素b点出队，对以b为起始点的所有边的终点依次进行松弛操作（此处只有e点），此时路径表格状态为：<br><br></p><p></p>
+<p></p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img alt="" src="http://image67.360doc.com/DownloadImg/2013/12/0819/37315024_4.jpg"></p><p></p>
+<p></p><p>在最短路径表中，e的最短路径估值也变小了，e在队列中不存在，因此e也要<br><br>入队，此时队列中的元素为c，d，e</p><p></p>
+<p></p><p>队首元素c点出队，对以c为起始点的所有边的终点依次进行松弛操作（此处有e,f两个点），此时路径表格状态为：<br><br></p><p></p>
+<p></p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img alt="" src="http://image67.360doc.com/DownloadImg/2013/12/0819/37315024_5.jpg"></p><p></p>
+<p></p><p>在最短路径表中，e，f的最短路径估值变小了，e在队列中存在，f不存在。因此<br><br>e不用入队了，f要入队，此时队列中的元素为d，e，f</p><p></p>
+<p></p><p>&nbsp;队首元素d点出队，对以d为起始点的所有边的终点依次进行松弛操作（此处只有g这个点），此时路径表格状态为：</p><p></p>
+<p></p><p>&nbsp;</p><p></p>
+<p></p><p>&nbsp;</p><p></p>
+<p></p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img alt="" src="http://image67.360doc.com/DownloadImg/2013/12/0819/37315024_6.jpg"></p><p></p>
+<p></p><p>在最短路径表中，g的最短路径估值没有变小（松弛不成功），没有新结点入队，队列中元素为f，g<br><br></p><p></p>
+<p></p><p>队首元素f点出队，对以f为起始点的所有边的终点依次进行松弛操作（此处有d，e，g三个点），此时路径表格状态为：</p><p></p>
+<p></p><p><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img alt="" src="http://image67.360doc.com/DownloadImg/2013/12/0819/37315024_7.jpg"></p><p></p>
+<p></p><p>在最短路径表中，e，g的最短路径估值又变小，队列中无e点，e入队，队列中存在g这个点，g不用入队，此时队列中元素为g，e<br><br></p><p></p>
+<p></p><p>队首元素g点出队，对以g为起始点的所有边的终点依次进行松弛操作（此处只有b点），此时路径表格状态为：<br><br></p><p></p>
+<p></p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img alt="" src="http://image67.360doc.com/DownloadImg/2013/12/0819/37315024_8.jpg"></p><p></p>
+<p></p><p>在最短路径表中，b的最短路径估值又变小，队列中无b点，b入队，此时队列中元素为e，b<br><br>队首元素e点出队，对以e为起始点的所有边的终点依次进行松弛操作（此处只有g这个点），此时路径表格状态为：<br><br></p><p></p>
+<p></p><p>&nbsp;</p><p></p>
+<p></p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img alt="" src="http://image67.360doc.com/DownloadImg/2013/12/0819/37315024_9.jpg"></p><p></p>
+<p></p><p>在最短路径表中，g的最短路径估值没变化（松弛不成功），此时队列中元素为b<br><br></p><p></p>
+<p></p><p>队首元素b点出队，对以b为起始点的所有边的终点依次进行松弛操作（此处只有e这个点），此时路径表格状态为：<br><br></p><p></p>
+<p></p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img alt="" src="http://image67.360doc.com/DownloadImg/2013/12/0819/37315024_9.jpg"></p><p></p>
+<p></p><p>在最短路径表中，e的最短路径估值没变化（松弛不成功），此时队列为空了<br><br></p><p></p>
+<p></p><p>最终a到g的最短路径为１４</p><p></p>
+<p></p><p>&nbsp;</p><p></p>
+<p></p><p>&nbsp;</p><p></p>
+<p></p><p>program：</p><p></p>
+<p></p><p>#include&lt;cstdio&gt;<br><br>using namespace std;<br><br>struct node<br><br>{int x;<br><br>&nbsp;int value;<br><br>&nbsp;int next;<br><br>};<br><br>node e[60000];<br><br>int visited[1505],dis[1505],st[1505],queue[1000];<br><br>int main()<br><br>{<br><br>&nbsp; int n,m,u,v,w,start,h,r,cur;<br><br>&nbsp; freopen(“c.in”,”r”,stdin);<br><br>&nbsp; freopen(“c.out”,”w”,stdout); <br><br>&nbsp; while(scanf(“%d%d”,&amp;n,&amp;m)!=EOF)<br><br>&nbsp; {<br><br>&nbsp;&nbsp;&nbsp; for(int i=1;i&lt;=1500;i++)<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {visited[i]=0;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dis[i]=-1;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; st[i]=-1;&nbsp; //这个初始化给下边那个while循环带来影响<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;<br><br>&nbsp;&nbsp; for(int i=1;i&lt;=m;i++)<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; scanf(“%d%d%d\n”,&amp;u,&amp;v,&amp;w);&nbsp;&nbsp;&nbsp;&nbsp; <br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e[i].x=v;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //记录后继节点&nbsp;&nbsp;&nbsp; 相当于链表中的创建一个节点，并使得数据域先记录<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e[i].value=w;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e[i].next=st[u];&nbsp;&nbsp;&nbsp;&nbsp; //记录顶点节点的某一个边表节点的下标，相当于在链表中吧该边表节点的next指针先指向他的后继边表节点<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; st[u]=i;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //把该顶点的指针指向边表节点，相当于链表中的插入中，头结点的指针改变<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; start=1;<br><br>&nbsp;&nbsp;&nbsp; visited[start]=1;<br><br>&nbsp;&nbsp;&nbsp; dis[start]=0;<br><br>&nbsp;&nbsp;&nbsp; h=0;<br><br>&nbsp;&nbsp;&nbsp; r=1;<br><br>&nbsp;&nbsp;&nbsp; queue[r]=start;<br><br>&nbsp;&nbsp;&nbsp; while(h!=r)<br><br>&nbsp;&nbsp;&nbsp;&nbsp; {</p><p></p>
+<p></p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; h=(h+1)%1000;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cur=queue[h];<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int tmp=st[cur];<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; visited[cur]=0;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;</p><p></p>
+<p></p><p>&nbsp;&nbsp;&nbsp;&nbsp; while(tmp!=-1)<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;if (dis[e[tmp].x]&lt;dis[cur]+e[tmp].value)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //改成大于号才对<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;{<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dis[e[tmp].x]=dis[cur]+e[tmp].value;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; if(visited[e[tmp].x]==0)<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p><p></p>
+<p></p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;visited[e[tmp].x]=1;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;r=(r+1)%1000;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; queue[r]=e[tmp].x;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;}<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tmp=e[tmp].next;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp; } <br><br>&nbsp;&nbsp;&nbsp; printf(“%d\n”,dis[n]);<br><br>&nbsp; }<br><br>&nbsp; return 0;&nbsp;&nbsp; <br><br>}</p><p></p>
+<p></p><p><br><br>&nbsp;</p><p></p>
+<p></p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(没有质量，就出数量)&nbsp; 下面一文转载出处：<a href="http://blog.csdn.net/morgan_xww/article/details/6279596" target="_blank" rel="external">http://blog.csdn.net/morgan_xww/article/details/6279596</a></p><p></p>
+<div>
+
+<p><ol></ol></p>
+<p><li>/<em> </em></li><li>SPFA(Shortest Path Faster Algorithm) [图的存储方式为邻接表]</li><li>是Bellman-Ford算法的一种队列实现，减少了不必要的冗余计算。</li><li>算法大致流程是用一个队列来进行维护。 初始时将源加入队列。 每次从队列中取出一个元素，</li><li>并对所有与他相邻的点进行松弛，若某个相邻的点松弛成功，则将其入队。 直到队列为空时算法结束。</li><li>它可以在O(kE)的时间复杂度内求出源点到其他所有点的最短路径，可以处理负边。<br></li><li></li><li>SPFA 在形式上和BFS非常类似，不同的是BFS中一个点出了队列就不可能重新进入队列，但是SPFA中</li><li>一个点可能在出队列之后再次被放入队列，也就是一个点改进过其它的点之后，过了一段时间可能本</li><li>身被改进，于是再次用来改进其它的点，这样反复迭代下去。 </li><li></li><li>判断有无负环：如果某个点进入队列的次数超过V次则存在负环（SPFA无法处理带负环的图）。</li><li></li><li>SPFA算法有两个优化算法 SLF 和 LLL： </li><li>SLF：Small Label First 策略，设要加入的节点是j，队首元素为i，若dist(j)&lt;dist(i)，则将j插入队首，</li><li>否则插入队尾。 </li><li>LLL：Large Label Last 策略，设队首元素为i，队列中所有dist值的平均值为x，若dist(i)&gt;x则将i插入</li><li>到队尾，查找下一元素，直到找到某一i使得dist(i)&lt;=x，则将i出对进行松弛操作。</li><li>引用网上资料，SLF 可使速度提高 15 ~ 20%；SLF + LLL 可提高约 50%。</li><li>在实际的应用中SPFA的算法时间效率不是很稳定，为了避免最坏情况的出现，通常使用效率更加稳定的Dijkstra算法。</li><li>/&nbsp; </li><li>&nbsp; </li><li>//用数组实现邻接表存储，pnt[i,0]表示与i相邻的结点个数，pnt[i,1…k]存储与i相邻的点&nbsp;</li><li>int&nbsp; pnt[MAXN][MAXN];&nbsp; </li><li>int&nbsp; map[MAXN][MAXN];<br>//map[i,j]为初始输入的i到j的距离，并且map[i,i]=0;未知的map[i,j]=INF;&nbsp;</li><li>int&nbsp; dis[MAXN];&nbsp; </li><li>char vst[MAXN];&nbsp;<br></li><li>&nbsp; </li><li>int SPFA(int n,int s)&nbsp;</li><li>{&nbsp; </li><li>&nbsp;&nbsp;&nbsp; int i, pri, end, p, t;&nbsp;</li><li>&nbsp;&nbsp;&nbsp; memset(vst, 0, sizeof(vst));&nbsp;<br></li><li>&nbsp;&nbsp;&nbsp; for (i=1; i&lt;=n; i++)&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dis[i] = INF;&nbsp; </li><li>&nbsp;&nbsp;&nbsp; dis[s] = 0;&nbsp; </li><li>&nbsp;&nbsp;&nbsp; vst[s] = 1;&nbsp; </li><li>&nbsp;&nbsp;&nbsp; Q[0] = s; pri = 0; end = 1;&nbsp; </li><li>&nbsp;&nbsp;&nbsp; while (pri &lt; end)&nbsp; </li><li>&nbsp;&nbsp;&nbsp; {&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; p = Q[pri];&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (i=1; i&lt;=pnt[p][0]; i++)&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t = pnt[p][i];&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //先释放，释放成功后再判断是否要加入队列&nbsp;<br></li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (dis[p]+map[p][t] &lt; dis[t])&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dis[t] = dis[p]+map[p][t];&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!vst[t])&nbsp;<br></li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Q[end++] = t;&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; vst[t] = 1;&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; vst[p] = 0;&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pri++;&nbsp; </li><li>&nbsp;&nbsp;&nbsp; }&nbsp; </li><li>&nbsp;&nbsp;&nbsp; return 1;&nbsp; </li><li>}&nbsp; </li><br></p></div><p></p>
+<p><div><ol start="1"><li>/<em>&nbsp;</em></li><li>SPFA(Shortest&nbsp;Path&nbsp;Faster&nbsp;Algorithm)&nbsp;[图的存储方式为邻接表]&nbsp;</li><li>是Bellman-Ford算法的一种队列实现，减少了不必要的冗余计算。&nbsp;</li><li>算法大致流程是用一个队列来进行维护。&nbsp;初始时将源加入队列。&nbsp;每次从队列中取出一个元素，&nbsp;</li><li>并对所有与他相邻的点进行松弛，若某个相邻的点松弛成功，则将其入队。&nbsp;直到队列为空时算法结束。&nbsp;</li><li>它可以在O(kE)的时间复杂度内求出源点到其他所有点的最短路径，可以处理负边。&nbsp;</li><li>&nbsp;</li><li>SPFA&nbsp;在形式上和BFS非常类似，不同的是BFS中一个点出了队列就不可能重新进入队列，但是SPFA中&nbsp;</li><li>一个点可能在出队列之后再次被放入队列，也就是一个点改进过其它的点之后，过了一段时间可能本&nbsp;</li><li>身被改进，于是再次用来改进其它的点，这样反复迭代下去。&nbsp;</li><li>&nbsp;</li><li>判断有无负环：如果某个点进入队列的次数超过V次则存在负环（SPFA无法处理带负环的图）。&nbsp;</li><li>&nbsp;</li><li>SPFA算法有两个优化算法&nbsp;SLF&nbsp;和&nbsp;LLL：&nbsp;</li><li>SLF：Small&nbsp;Label&nbsp;First&nbsp;策略，设要加入的节点是j，队首元素为i，若dist(j)&lt;dist(i)，则将j插入队首，&nbsp;</li><li>否则插入队尾。&nbsp;</li><li>LLL：Large&nbsp;Label&nbsp;Last&nbsp;策略，设队首元素为i，队列中所有dist值的平均值为x，若dist(i)&gt;x则将i插入&nbsp;</li><li>到队尾，查找下一元素，直到找到某一i使得dist(i)&lt;=x，则将i出对进行松弛操作。&nbsp;</li><li>引用网上资料，SLF&nbsp;可使速度提高&nbsp;15&nbsp;~&nbsp;20%；SLF&nbsp;+&nbsp;LLL&nbsp;可提高约&nbsp;50%。&nbsp;</li><li>在实际的应用中SPFA的算法时间效率不是很稳定，为了避免最坏情况的出现，通常使用效率更加稳定的Dijkstra算法。&nbsp;</li><li>/&nbsp;&nbsp;</li><li>&nbsp;&nbsp;</li><li>//用数组实现邻接表存储，pnt[i,0]表示与i相邻的结点个数，pnt[i,1…k]存储与i相邻的点&nbsp;&nbsp;</li><li>int&nbsp;&nbsp;pnt[MAXN][MAXN];&nbsp;&nbsp;</li><li>int&nbsp;&nbsp;map[MAXN][MAXN];&nbsp;//map[i,j]为初始输入的i到j的距离，并且map[i,i]=0;未知的map[i,j]=INF;&nbsp;&nbsp;</li><li>int&nbsp;&nbsp;dis[MAXN];&nbsp;&nbsp;</li><li>char&nbsp;vst[MAXN];&nbsp;&nbsp;</li><li>&nbsp;&nbsp;</li><li>int&nbsp;SPFA(int&nbsp;n,&nbsp;int&nbsp;s)&nbsp;&nbsp;</li><li>{&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;i,&nbsp;pri,&nbsp;end,&nbsp;p,&nbsp;t;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;memset(vst,&nbsp;0,&nbsp;sizeof(vst));&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(i=1;&nbsp;i&lt;=n;&nbsp;i++)&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dis[i]&nbsp;=&nbsp;INF;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;dis[s]&nbsp;=&nbsp;0;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;vst[s]&nbsp;=&nbsp;1;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;Q[0]&nbsp;=&nbsp;s;&nbsp;pri&nbsp;=&nbsp;0;&nbsp;end&nbsp;=&nbsp;1;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;while&nbsp;(pri&nbsp;&lt;&nbsp;end)&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p&nbsp;=&nbsp;Q[pri];&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(i=1;&nbsp;i&lt;=pnt[p][0];&nbsp;i++)&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t&nbsp;=&nbsp;pnt[p][i];&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//先释放，释放成功后再判断是否要加入队列&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(dis[p]+map[p][t]&nbsp;&lt;&nbsp;dis[t])&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dis[t]&nbsp;=&nbsp;dis[p]+map[p][t];&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(!vst[t])&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Q[end++]&nbsp;=&nbsp;t;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vst[t]&nbsp;=&nbsp;1;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vst[p]&nbsp;=&nbsp;0;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pri++;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;1;&nbsp;&nbsp;</li><li>}&nbsp;&nbsp;</li></ol></div></p>
+<div>
+
+<p><ol></ol></p>
+<p><li>正规邻接表存储：&nbsp; </li><li>/<em> ——- 邻接表存储 ———– </em>/&nbsp;<br></li><li>struct Edge&nbsp; </li><li>{&nbsp; </li><li>&nbsp;&nbsp;&nbsp; int e;&nbsp; //终点&nbsp;</li><li>&nbsp;&nbsp;&nbsp; int v;&nbsp; //边权&nbsp;</li><li>&nbsp;&nbsp;&nbsp; struct Edge <em>nxt;&nbsp;<br></em></li><li>};&nbsp; </li><li>struct&nbsp; </li><li>{&nbsp; </li><li>&nbsp;&nbsp;&nbsp; struct Edge head, <em>last;&nbsp;</em></li><li>} node[MAXN];&nbsp; </li><li>/ ——————————– <em>/&nbsp;</em></li><li>&nbsp; </li><li>/&nbsp; 添加有向边&lt;起点,终点,边权&gt;&nbsp; <em>/&nbsp;</em></li><li>void add(int s,int e,int v)&nbsp;</li><li>{&nbsp; </li><li>&nbsp;&nbsp;&nbsp; struct Edge p;&nbsp; </li><li>&nbsp;&nbsp;&nbsp; p = (struct Edge<em>)malloc(sizeof(struct Edge));&nbsp;</em></li><li>&nbsp;&nbsp;&nbsp; p-&gt;e = e;&nbsp; </li><li>&nbsp;&nbsp;&nbsp; p-&gt;v = v;&nbsp; </li><li>&nbsp;&nbsp;&nbsp; p-&gt;nxt = NULL;&nbsp; </li><li>&nbsp;&nbsp;&nbsp; if (node[s].head == NULL)&nbsp;</li><li>&nbsp;&nbsp;&nbsp; {&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; node[s].head = p;&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; node[s].last = p;&nbsp; </li><li>&nbsp;&nbsp;&nbsp; }&nbsp; </li><li>&nbsp;&nbsp;&nbsp; else&nbsp; </li><li>&nbsp;&nbsp;&nbsp; {&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; node[s].last-&gt;nxt = p;&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; node[s].last = p;&nbsp; </li><li>&nbsp;&nbsp;&nbsp; }&nbsp; </li><li>}&nbsp; </li><li>&nbsp; </li><li>/&nbsp; 松弛，成功返回1，否则0&nbsp; <em>/&nbsp;<br></em></li><li>int relax(int s,int e,int v)&nbsp;</li><li>{&nbsp; </li><li>&nbsp;&nbsp;&nbsp; if (dis[s]+v &lt; dis[e])&nbsp; </li><li>&nbsp;&nbsp;&nbsp; {&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dis[e] = dis[s]+v;&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return 1;&nbsp;<br></li><li>&nbsp;&nbsp;&nbsp; }&nbsp; </li><li>&nbsp;&nbsp;&nbsp; return 0;&nbsp; </li><li>}&nbsp; </li><li>&nbsp; </li><li>/&nbsp; SPFA有负权回路返回0,否则返回1并且最短路径保存在dis[]&nbsp; <em>/&nbsp;</em></li><li>int n;&nbsp; </li><li>int vst[MAXN], cnt[MAXN];&nbsp;<br></li><li>int Q[MAXNMAXN];&nbsp;<br></li><li>int SPFA(int s0)&nbsp;</li><li>{&nbsp; </li><li>&nbsp;&nbsp;&nbsp; int i, p, q;&nbsp; </li><li>&nbsp;&nbsp;&nbsp; struct Edge *pp;&nbsp;<br></li><li>&nbsp; </li><li>&nbsp;&nbsp;&nbsp; memset(vst, 0, sizeof(vst));&nbsp;</li><li>&nbsp;&nbsp;&nbsp; memset(cnt, 0, sizeof(cnt));&nbsp;<br></li><li>&nbsp;&nbsp;&nbsp; for (i=0; i&lt;=n; i++)&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dis[i] = INF;&nbsp; </li><li>&nbsp;&nbsp;&nbsp; dis[s0] = 0;&nbsp; </li><li>&nbsp; </li><li>&nbsp;&nbsp;&nbsp; Q[0] = s0; p = 0; q = 1;&nbsp; </li><li>&nbsp;&nbsp;&nbsp; vst[s0] = 1;&nbsp; </li><li>&nbsp;&nbsp;&nbsp; cnt[s0]++;&nbsp; </li><li>&nbsp;&nbsp;&nbsp; while (p &lt; q)&nbsp; </li><li>&nbsp;&nbsp;&nbsp; {&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pp = node[Q[p]].head;&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; while (pp)&nbsp;<br></li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (relax(Q[p], pp-&gt;e, pp-&gt;v) &amp;&amp; !vst[pp-&gt;e])&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Q[q++] = pp-&gt;e;&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; vst[pp-&gt;e] = 1;&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cnt[pp-&gt;e]++;&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (cnt[pp-&gt;e] &gt; n)<br>//有负权回路&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return 0;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pp = pp-&gt;nxt;&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; vst[Q[p]] = 0;&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; p++;&nbsp; </li><li>&nbsp;&nbsp;&nbsp; }&nbsp; </li><li>&nbsp;&nbsp;&nbsp; return 1;&nbsp; </li><li>}&nbsp; </li><br></p></div><p></p>
+<p><div><ol start="1"><li>正规邻接表存储：&nbsp;&nbsp;</li><li>/<em>&nbsp;——-&nbsp;邻接表存储&nbsp;———–&nbsp;</em>/&nbsp;&nbsp;</li><li>struct&nbsp;Edge&nbsp;&nbsp;</li><li>{&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;e;&nbsp;&nbsp;//终点&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;v;&nbsp;&nbsp;//边权&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;struct&nbsp;Edge&nbsp;<em>nxt;&nbsp;&nbsp;</em></li><li>};&nbsp;&nbsp;</li><li>struct&nbsp;&nbsp;</li><li>{&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;struct&nbsp;Edge&nbsp;head,&nbsp;<em>last;&nbsp;&nbsp;</em></li><li>}&nbsp;node[MAXN];&nbsp;&nbsp;</li><li>/&nbsp;——————————–&nbsp;<em>/&nbsp;&nbsp;</em></li><li>&nbsp;&nbsp;</li><li>/&nbsp;&nbsp;添加有向边&lt;起点,终点,边权&gt;&nbsp;&nbsp;<em>/&nbsp;&nbsp;</em></li><li>void&nbsp;add(int&nbsp;s,&nbsp;int&nbsp;e,&nbsp;int&nbsp;v)&nbsp;&nbsp;</li><li>{&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;struct&nbsp;Edge&nbsp;p;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;p&nbsp;=&nbsp;(struct&nbsp;Edge<em>)malloc(sizeof(struct&nbsp;Edge));&nbsp;&nbsp;</em></li><li>&nbsp;&nbsp;&nbsp;&nbsp;p-&gt;e&nbsp;=&nbsp;e;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;p-&gt;v&nbsp;=&nbsp;v;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;p-&gt;nxt&nbsp;=&nbsp;NULL;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(node[s].head&nbsp;==&nbsp;NULL)&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;node[s].head&nbsp;=&nbsp;p;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;node[s].last&nbsp;=&nbsp;p;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;else&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;node[s].last-&gt;nxt&nbsp;=&nbsp;p;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;node[s].last&nbsp;=&nbsp;p;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</li><li>}&nbsp;&nbsp;</li><li>&nbsp;&nbsp;</li><li>/&nbsp;&nbsp;松弛，成功返回1，否则0&nbsp;&nbsp;<em>/&nbsp;&nbsp;</em></li><li>int&nbsp;relax(int&nbsp;s,&nbsp;int&nbsp;e,&nbsp;int&nbsp;v)&nbsp;&nbsp;</li><li>{&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(dis[s]+v&nbsp;&lt;&nbsp;dis[e])&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dis[e]&nbsp;=&nbsp;dis[s]+v;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;1;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;0;&nbsp;&nbsp;</li><li>}&nbsp;&nbsp;</li><li>&nbsp;&nbsp;</li><li>/&nbsp;&nbsp;SPFA有负权回路返回0,否则返回1并且最短路径保存在dis[]&nbsp;&nbsp;<em>/&nbsp;&nbsp;</em></li><li>int&nbsp;n;&nbsp;&nbsp;</li><li>int&nbsp;vst[MAXN],&nbsp;cnt[MAXN];&nbsp;&nbsp;</li><li>int&nbsp;Q[MAXNMAXN];&nbsp;&nbsp;</li><li>int&nbsp;SPFA(int&nbsp;s0)&nbsp;&nbsp;</li><li>{&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;i,&nbsp;p,&nbsp;q;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;struct&nbsp;Edge&nbsp;*pp;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;memset(vst,&nbsp;0,&nbsp;sizeof(vst));&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;memset(cnt,&nbsp;0,&nbsp;sizeof(cnt));&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(i=0;&nbsp;i&lt;=n;&nbsp;i++)&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dis[i]&nbsp;=&nbsp;INF;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;dis[s0]&nbsp;=&nbsp;0;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;Q[0]&nbsp;=&nbsp;s0;&nbsp;p&nbsp;=&nbsp;0;&nbsp;q&nbsp;=&nbsp;1;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;vst[s0]&nbsp;=&nbsp;1;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;cnt[s0]++;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;while&nbsp;(p&nbsp;&lt;&nbsp;q)&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pp&nbsp;=&nbsp;node[Q[p]].head;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while&nbsp;(pp)&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(relax(Q[p],&nbsp;pp-&gt;e,&nbsp;pp-&gt;v)&nbsp;&amp;&amp;&nbsp;!vst[pp-&gt;e])&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Q[q++]&nbsp;=&nbsp;pp-&gt;e;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vst[pp-&gt;e]&nbsp;=&nbsp;1;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cnt[pp-&gt;e]++;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(cnt[pp-&gt;e]&nbsp;&gt;&nbsp;n)&nbsp;//有负权回路&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;0;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pp&nbsp;=&nbsp;pp-&gt;nxt;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vst[Q[p]]&nbsp;=&nbsp;0;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p++;&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;1;&nbsp;&nbsp;</li><li>}&nbsp;&nbsp;</li></ol></div></p>
+<div>
+
+<p><ol></ol></p>
+<p><li>/<strong>通过poj 3159 证明：还是用数组来实现邻接表比用链表来实现邻接表效率高，&nbsp; </strong>/&nbsp;</li><li>&nbsp; </li><li>#define MAX_node 10000&nbsp;</li><li>#define MAX_edge 100000&nbsp;<br></li><li>&nbsp; </li><li>struct Edge&nbsp; </li><li>{&nbsp; </li><li>&nbsp;&nbsp;&nbsp; int e, v;&nbsp; </li><li>} edge[MAX_edge];&nbsp; </li><li>&nbsp; </li><li>int neg;&nbsp;&nbsp;&nbsp; //number of edge&nbsp;</li><li>int node[MAX_node];&nbsp; //注意node要用memset初始化全部为-1&nbsp;</li><li>int next[MAX_edge];&nbsp;<br></li><li>&nbsp; </li><li>void add(int s,int e,int v)&nbsp;</li><li>{&nbsp; </li><li>&nbsp;&nbsp;&nbsp; edge[neg].e = e;&nbsp; </li><li>&nbsp;&nbsp;&nbsp; edge[neg].v = v;&nbsp; </li><li>&nbsp;&nbsp;&nbsp; next[neg] = node[s];&nbsp; </li><li>&nbsp;&nbsp;&nbsp; node[s] = neg++;&nbsp; </li><li>}&nbsp; </li><li>/<em>&nbsp; 该题还证明用栈来实现SPFA比用队列来实现效率高，还节约空间 </em>/&nbsp;</li><li>int SPFA(int s0)//栈实现&nbsp;</li><li>{&nbsp; </li><li>&nbsp;&nbsp;&nbsp; int i, t, p, top;&nbsp;</li><li>&nbsp; </li><li>&nbsp;&nbsp;&nbsp; memset(vst, 0, sizeof(vst));&nbsp;</li><li>&nbsp;&nbsp;&nbsp; for (i=1; i&lt;=n; i++)&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dis[i] = INF;&nbsp; </li><li>&nbsp;&nbsp;&nbsp; dis[s0] = 0;&nbsp; </li><li>&nbsp; </li><li>&nbsp;&nbsp;&nbsp; Q[0] = s0;&nbsp; </li><li>&nbsp;&nbsp;&nbsp; top = 1;&nbsp; </li><li>&nbsp;&nbsp;&nbsp; vst[s0] = 1;&nbsp; </li><li>&nbsp;&nbsp;&nbsp; while (top)&nbsp;<br></li><li>&nbsp;&nbsp;&nbsp; {&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t = Q[–top];&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; vst[t] = 0;&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; p = node[t];&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; while (p != -1)&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (relax(t, edge[p].e, edge[p].v) &amp;&amp; !vst[edge[p].e])&nbsp;</li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Q[top++] = edge[p].e;&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; vst[edge[p].e] = 1;&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; p = next[p];&nbsp; </li><li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp; </li><li>&nbsp;&nbsp;&nbsp; }&nbsp; </li><li>&nbsp;&nbsp;&nbsp; return 1;&nbsp; </li><li>} </li><br></p></div><br><em>如果对我的博文有任何的意见或者建议，欢迎在文章的下方进行评论</em><p></p>
+
+		<div id="hitokoto"><script>hitokoto()</script></div>
+      
+    </div>
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/变强/" rel="tag">#变强</a>
+          
+            <a href="/tags/分享/" rel="tag">#分享</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/04/20/2016年4月20日总结：堆/" rel="next" title="2016年4月20日总结：堆">
+                <i class="fa fa-chevron-left"></i> 2016年4月20日总结：堆
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/04/21/SPFA算法详解/"
+           data-title="SPFA算法详解" data-url="http://zhaoleyi.github.io/2016/04/21/SPFA算法详解/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://7xrxql.com1.z0.glb.clouddn.com/e6dfa219ebc4b7458b83ba58cefc1e178b8215f7.jpg"
+               alt="Leo Zhao" />
+          <p class="site-author-name" itemprop="name">Leo Zhao</p>
+          <p class="site-description motion-element" itemprop="description">浪什么浪，再浪连鸡牌都没有</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">16</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zhaoleyi/zhaoleyi.github.io.git" target="_blank">
+                  
+                    <i class="fa fa-globe"></i> github
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/1657975810/home?wvr=5" target="_blank">
+                  
+                    <i class="fa fa-globe"></i> 新浪微博
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:zhaoleyi20010403@126.com" target="_blank">
+                  
+                    <i class="fa fa-globe"></i> 126邮箱
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+            <div class="links-of-blogroll-title">友链</div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://redbowtie.github.io" target="_blank">帅哥</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://littlequentin.github.io" target="_blank">家悦神犇</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://the-lost-star.blog.163.com/" target="_blank">主席神犇</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.mregg.top" target="_blank">hcz神犇</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wyxoi.github.io" target="_blank">wyx神犇</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://stalker-blog.apphb.com/" target="_blank">大圣神犇</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://hzq84621.is-programmer.com/" target="_blank">比♂利♂黄</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://vanfei.is-programmer.com/" target="_blank">费老板</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://aftc.github.io/" target="_blank">神犇狄拉克</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jytnb1.blog.163.com" target="_blank">AK爷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.sina.com.cn/u/1943318733" target="_blank">范寒威</a>
+                </li>
+              
+            </ul>
+          
+        </div>
+		
+		
+		<script>
+			$(function() {
+				var links = $(".links-of-blogroll-item");
+				var s = "<div style=\"display: inline-block; vertical-align: top;\"><ul class=\"links-of-blogroll-list\" /></div>";
+				var arr = [$(s), $(s), $(s)];
+				var x = 0;
+				for (var i = 0; i < links.length; i++)
+				{
+					arr[x].find("ul").append(links[i]);
+					x++;
+					x %= 3;
+				}
+				var div = $("<div></div>");
+				for (var i = 0; i < 3; i++) div.append(arr[i]);
+				var ul = $(".links-of-blogroll-list");
+				ul.before(div);
+				ul.hide();
+			});
+		</script>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Leo Zhao</span>
+</div>
+
+<div class="footer-info">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="footer-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+<br />
+
+<div class="footer-info">
+<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+</div>
+
+<div class="footer-info">
+总字数<span class="post-count">63.6k</span>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"zhaoleyi"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+
+</body>
+</html>

@@ -74,7 +74,7 @@
 <meta property="og:image" content="http://7xrxql.com1.z0.glb.clouddn.com/37315024_8.jpg">
 <meta property="og:image" content="http://7xrxql.com1.z0.glb.clouddn.com/37315024_9.jpg">
 <meta property="og:image" content="http://7xrxql.com1.z0.glb.clouddn.com/37315024_9.jpg">
-<meta property="og:updated_time" content="2016-04-21T09:35:26.513Z">
+<meta property="og:updated_time" content="2016-04-21T09:35:26.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SPFA算法详解">
 <meta name="twitter:description" content="现在是2016年4月21日，今天我学习了不少奇奇怪怪的算法，同时还为我的博客增加了mathJax支持。此文是一篇关于SPFA算法的归纳，部分内容转载，不喜勿喷">
@@ -194,6 +194,7 @@ var _hmt = _hmt || [];
 
 <nav class="site-nav">
   
+  
 
   
     <ul id="menu" class="menu">
@@ -229,11 +230,10 @@ var _hmt = _hmt || [];
         </li>
       
 
-      
+	  
         <li class="menu-item menu-item-search">
-          
-            <a href="#" class="st-search-show-outputs">
-          
+		  
+		  <a href="#" onclick="javascript:$('#search-box').fadeIn();return false;">
             
               <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
             
@@ -241,28 +241,69 @@ var _hmt = _hmt || [];
           </a>
         </li>
       
+	  
     </ul>
   
 
   
-    <div class="site-search">
-      
-  <form class="site-search-form">
-  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
-</form>
-
-<script type="text/javascript">
-  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
-    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
-    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
-  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
-
-  _st('install', 'fSYqaVJkH2NpsCK6_3xS','2.0.0');
-</script>
-
-
-
-    </div>
+  
+  <script>
+  function parsePosts() {
+	var list = [];
+	$.get({
+		url: '/sitemap.xml',
+		async: false,
+		success: function(data) {
+			$(data).find("loc").each(function() {
+				var s = $(this).html();
+				if (s[s.length - 1] !== '/') return;
+				s = s.substr(0, s.length -1);
+				s = s.substr(s.lastIndexOf('/') + 1);
+				list.push({ title: decodeURI(s), url: $(this).html() });
+			});
+		}
+	});
+	$.get({
+		url: '/tags/',
+		async: false,
+		success: function(data) {
+			$(data).find('.tag-cloud-tags a').each(function() {
+				list.push({ title: $(this).text(), url: $(this).prop('href') });
+			});
+		}
+	});
+	return list;
+  }
+  function search() {
+    var list = parsePosts(), keyword = $('#search-keyword').val();
+	$('#search-result').empty();
+	for (var i = 0; i < list.length; i++) {
+	  if (list[i].title.search(keyword) === -1) continue;
+	  $('#search-result').append($('<a>').attr('href', list[i].url).attr('target','_blank').append($('<h1>').text(list[i].title)));
+	}
+  }
+  </script>
+  <div id="search-box" style="z-index: 1; display: none; position: fixed;width: 40%;height: 600px;top: 50%;left: 50%;margin-left: -20%;margin-top: -300px;background-color: lightgrey;border: gray 2px solid;border-radius: 10px;padding: 20px;"><a href="#" onclick="javascript:$('#search-box').fadeOut()"><i class="fa fa-close" style="
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 10px;
+    font-size: 2em;
+"></i></a><div style="margin-top: 5px;"><input id="search-keyword" type="text" style="
+    width: 80%;
+    vertical-align: middle;
+    height: 25px;
+    margin-right: 5px;
+"></input><input type="button" style="
+    width: 15%;
+    vertical-align: middle;
+    height: 30px;
+" value="搜索" onclick="javascript:setTimeout(search,0);"></input></div>
+<div id="search-result" style="
+    overflow: auto;
+    height: 560px;
+"></div>
+</div>
   
 </nav>
 

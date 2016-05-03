@@ -293,6 +293,12 @@ var _hmt = _hmt || [];
     overflow: auto;
     height: 560px;
 "></div>
+<script>
+$('#search-keyword').on('keydown',function(e){
+	if (e.keyCode=13) setTimeout(search(),0);
+	else return false;
+});
+</script>
 </div>
   
 </nav>

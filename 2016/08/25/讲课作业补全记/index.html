@@ -42,7 +42,7 @@
 <link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="题解,模板," />
+  <meta name="keywords" content="变强,日常日记," />
 
 
 
@@ -60,19 +60,16 @@
 
 
 
-<meta name="description" content="首先，此文转载自CSDN上一位大牛的博客，地址是：http://blog.csdn.net/int64ago/article/details/7429868">
+<meta name="description" content="也许人太弱是因为之前都没有做作业，所以我要变强也许应该先补全作业，来来来补作业计划开始了">
 <meta property="og:type" content="article">
-<meta property="og:title" content="转：搞懂树状数组">
-<meta property="og:url" content="http://zhaoleyi.github.io/2016/04/06/转：搞懂树状数组/index.html">
+<meta property="og:title" content="讲课作业补全记">
+<meta property="og:url" content="http://zhaoleyi.github.io/2016/08/25/讲课作业补全记/index.html">
 <meta property="og:site_name" content="Leo Zhao 's blog">
-<meta property="og:description" content="首先，此文转载自CSDN上一位大牛的博客，地址是：http://blog.csdn.net/int64ago/article/details/7429868">
-<meta property="og:image" content="http://my.csdn.net/uploads/201204/05/1333629700_5876.jpg">
-<meta property="og:image" content="http://my.csdn.net/uploads/201204/05/1333629705_5541.png">
-<meta property="og:updated_time" content="2016-04-06T08:43:53.000Z">
+<meta property="og:description" content="也许人太弱是因为之前都没有做作业，所以我要变强也许应该先补全作业，来来来补作业计划开始了">
+<meta property="og:updated_time" content="2016-08-26T04:26:06.845Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="转：搞懂树状数组">
-<meta name="twitter:description" content="首先，此文转载自CSDN上一位大牛的博客，地址是：http://blog.csdn.net/int64ago/article/details/7429868">
-<meta name="twitter:image" content="http://my.csdn.net/uploads/201204/05/1333629700_5876.jpg">
+<meta name="twitter:title" content="讲课作业补全记">
+<meta name="twitter:description" content="也许人太弱是因为之前都没有做作业，所以我要变强也许应该先补全作业，来来来补作业计划开始了">
 
 
 
@@ -118,7 +115,7 @@
   <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
 
 
-  <title> 转：搞懂树状数组 | Leo Zhao 's blog </title>
+  <title> 讲课作业补全记 | Leo Zhao 's blog </title>
   <script>
 var _hmt = _hmt || [];
 (function() {
@@ -340,7 +337,7 @@ $('#search-keyword').on('keydown',function(e){
             
             
               
-                转：搞懂树状数组
+                讲课作业补全记
               
             
           </h1>
@@ -352,8 +349,8 @@ $('#search-keyword').on('keydown',function(e){
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-04-06T16:12:51+08:00" content="2016-04-06">
-              2016-04-06
+            <time itemprop="dateCreated" datetime="2016-08-25T19:47:36+08:00" content="2016-08-25">
+              2016-08-25
             </time>
           </span>
 
@@ -363,8 +360,8 @@ $('#search-keyword').on('keydown',function(e){
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/04/06/转：搞懂树状数组/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/04/06/转：搞懂树状数组/" itemprop="commentsCount"></span>
+                <a href="/2016/08/25/讲课作业补全记/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/25/讲课作业补全记/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -386,13 +383,20 @@ $('#search-keyword').on('keydown',function(e){
       
 
       
-        <p>首先，此文转载自CSDN上一位大牛的博客，地址是：<br><a href="http://blog.csdn.net/int64ago/article/details/7429868" target="_blank" rel="external">http://blog.csdn.net/int64ago/article/details/7429868</a><br><a id="more"></a></p>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>由于我不会线段树，树状数组等一系列BALABALA的东西，所以今天的模拟赛萎掉了，然后痛定思痛，开始充电（我也不知道是快速的还是慢速的）</p>
-<h1 id="正文（转）"><a href="#正文（转）" class="headerlink" title="正文（转）"></a>正文（转）</h1><p>写下这个标题，其实心里还是没底的，与其说是写博帖，不如说是做总结。第一个接触树状数组还是两年前，用什么语言来形容当时的感觉呢？……太神奇了！真的，无法表达出那种感觉，她是那么的优雅，10行不到的代码，却把事情干的如此出色！没有了解她原理的前提下即使把代码倒背如流也理解不了！其中，我就是一直没搞懂地在使用她。时隔两年，又无意遇到了她，可能是两年的代码经验的积累，有了些新的认识，可以自信的说理解了吧！下面我争取用自己的方式让更多人明白她，而不是背诵她。为了更方便的说明，文章里会自己强加一些概念，只是为了更好的理解，不是什么专业术语之类的。</p>
-<h2 id="树状数组是干什么的？"><a href="#树状数组是干什么的？" class="headerlink" title="树状数组是干什么的？"></a>树状数组是干什么的？</h2><p>平常我们会遇到一些对数组进行维护查询的操作，比较常见的如，修改某点的值、求某个区间的和，而这两种恰恰是树状数组的强项！当然，数据规模不大的时候，对于修改某点的值是非常容易的，复杂度是O(1)，但是对于求一个区间的和就要扫一遍了，复杂度是O(N)，如果实时的对数组进行M次修改或求和，最坏的情况下复杂度是O(M×N)，当规模增大后这是划不来的！而树状数组干同样的事复杂度却是O(M×lgN)，别小看这个lg，很大的数一lg就很小了，这个学过数学的都知道吧，不需要我说了。申明一下，看下面的文章一定不要急，只需要看懂每一步最后自然就懂了。</p>
-<h2 id="树状数组怎么干的？"><a href="#树状数组怎么干的？" class="headerlink" title="树状数组怎么干的？"></a>树状数组怎么干的？</h2><p>先看两幅图（网上找的，如果雷同，不要大惊小怪～），下面的说明都是基于这两幅图的，上边的叫A图吧，下边的叫B图：<br><img src="http://my.csdn.net/uploads/201204/05/1333629700_5876.jpg" alt="avatar"> <img src="http://my.csdn.net/uploads/201204/05/1333629705_5541.png" alt="avatar"><br>是不是很像一颗树？对，这就是为什么叫树状数组了～先看A图，a数组就是我们要维护和查询的数组，但是其实我们整个过程中根本用不到a数组，你可以把它当作一个摆设！c数组才是我们全程关心和操纵的重心。先由图来看看c数组的规则，其中c8 = c4+c6+c7+a8，c6 = c5+a6……先不必纠结怎么做到的，我们只要知道c数组的大致规则即可，很容易知道c8表示a1～a8的和，但是c6却是表示a5～a6的和，为什么会产生这样的区别的呢？或者说发明她的人为什么这样区别对待呢？答案是，这样会使操作更简单！看到这相信有些人就有些感觉了，为什么复杂度被lg了呢？可以看到，c8可以看作a1～a8的左半边和+右半边和，而其中左半边和是确定的c4，右半边其实也是同样的规则把a5～a8一分为二……继续下去都是一分为二直到不能分，可以看看B图。怎么样？是不是有点二分的味道了？对，说白了树状数组就是巧妙的利用了二分，她并不神秘，关键是她的巧妙！<br>她又是怎样做到不断的一分为二呢？说这个之前我先说个叫lowbit的东西，lowbit(k)就是把k的二进制的高位1全部清空，只留下最低位的1,比如10的二进制是1010,则lowbit(k)=lowbit(1010)=0010(2进制)，介于这个lowbit在下面会经常用到，这里给一个非常方便的实现方式，比较普遍的方法lowbit(k)=k&amp;-k，这是位运算，我们知道一个数加一个负号是把这个数的二进制取反+1，如-10的二进制就是-1010=0101+1=0110，然后用1010&amp;0110，答案就是0010了！明白了求解lowbit的方法就可以了，继续下面。介于下面讨论十进制已经没有意义（这个世界本来就是二进制的，人非要主观的构建一个十进制），下面所有的数没有特别说明都当作二进制。<br>上面那么多文字说lowbit，还没说它的用处呢，它就是为了联系a数组和c数组的！ck表示从ak开始往左连续求lowbit(k)个数的和，比如c[0110]=a[0110]+a[0101]，就是从110开始计算了0010个数的和，因为lowbit(0110)=0010，可以看到其实只有低位的1起作用，因为很显然可以写出c[0010]=a[0010]+a[0001]，这就为什么我们任何数都只关心它的lowbit，因为高位不起作用（基于我们的二分规则它必须如此！），除非除了高位其余位都是0，这时本身就是lowbit。<br>既然关系建立好了，看看如何实现a某一个位置数据跟改的，她不会直接改的（开始就说了，a根本不存在），她每次改其实都要维护c数组应有的性质，因为后面求和要用到。而维护也很简单，比如更改了a[0011]，我们接着要修改c[0011],c[0100],c[1000]，这是很容易从图上看出来的，但是你可能会问，他们之间有申明必然联系吗？每次求解总不能总要拿图来看吧？其实从0011——&gt;0100——&gt;1000的变化都是进行“去尾”操作，又是自己造的词–’’，我来解释下，就是把尾部应该去掉的1都去掉转而换到更高位的1,记住每次变换都要有一个高位的1产生，所以0100是不能变换到0101的，因为没有新的高位1产生，这个变换过程恰好是可以借助我们的lowbit进行的，k +=lowbit(k)。<br>好吧，现在更新的次序都有了，可能又会产生新的疑问了：为什么它非要是这种关系啊？这就要追究到之前我们说c8可以看作a1～a8的左半边和+右半边和……的内容了，为什么c[0011]会影响到c[0100]而不会影响到c[0101]，这就是之前说的c[0100]的求解实际上是这样分段的区间 c[0001]~c[0001] 和区间c[0011]~c[0011]的和，数字太小，可能这样不太理解，在比如c[0100]会影响c[1000]，为什么呢？因为c[1000]可以看作0001～0100的和加上0101~1000的和，但是0101位置的数变化并会直接作用于c[1000]，因为它的尾部1不能一下在跳两级在产生两次高位1,是通过c[0110]间接影响的，但是，c[0100]却可以跳一级产生一次高位1。<br>可能上面说的你比较绕了，那么此时你只需注意：c的构成性质（其实是分组性质）决定了c[0011]只会直接影响c[0100]，而c[0100]只会直接影响[1000]，而下表之间的关系恰好是也必须是k +=lowbit(k)。此时我们就是写出跟新维护树的代码：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> k,<span class="keyword">int</span> num)</span>  </span></div><div class="line">&#123;  </div><div class="line">    <span class="keyword">while</span>(k&lt;=n)  </div><div class="line">    &#123;  </div><div class="line">        tree[k]+=num;  </div><div class="line">        k+=k&amp;-k;  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>有了上面的基础，说求和就比较简单了。比如求0001～0110的和就直接c[0100]+c[0110]，分析方法与上面的恰好逆过来，而且写法也是逆过来的，具体就不累述了：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"> <span class="function"><span class="keyword">int</span> <span class="title">read</span><span class="params">(<span class="keyword">int</span> k)</span><span class="comment">//1~k的区间和  </span></span></div><div class="line">&#123;  </div><div class="line">    <span class="keyword">int</span> sum=<span class="number">0</span>;  </div><div class="line">    <span class="keyword">while</span>(k)  </div><div class="line">    &#123;  </div><div class="line">        sum+=tree[k];  </div><div class="line">        k-=k&amp;-k;  </div><div class="line">    &#125;  </div><div class="line">    <span class="keyword">return</span> sum;  </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="总结一下吧"><a href="#总结一下吧" class="headerlink" title="总结一下吧"></a>总结一下吧</h2><p>首先，明白树状数组所白了是按照二分对数组进行分组；维护和查询都是O(lgn)的复杂度，复杂度取决于最坏的情况，也是O(lgn);lowbit这里只是一个技巧，关键在于明白c数组的构成规律;分析的过程二进制一定要深入人心，当作心目中的十进制。</p>
+        <p>也许人太弱是因为之前都没有做作业，所以我要变强也许应该先补全作业，来来来补作业计划开始了<br><a id="more"></a></p>
+<h1 id="dp入门"><a href="#dp入门" class="headerlink" title="dp入门"></a>dp入门</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>由于我的dp技术非常不行，所以我先从dp入手  </p>
+<h2 id="T1"><a href="#T1" class="headerlink" title="T1"></a>T1</h2><p><a href="http://codeforces.com/contest/446/problem/A" target="_blank" rel="external">传送门</a><br>题面的意思大概是给你一串数列，在改变其中的一个数的情况下，求得可以产生的最长的严格递增的数列的长度<br><em>不要虚，这题还是比较简单的，所以静静的想5分钟吧</em></p>
+<p></p><p align="center"><big>1分钟</big></p><p></p>
+<p></p><p align="center"><big>2分钟</big></p><p></p>
+<p></p><p align="center"><big>3分钟</big></p><p></p>
+<p></p><p align="center"><big>4分钟</big></p><p></p>
+<p></p><p align="center"><big>5分钟</big></p><br>时间到。具体就是用f1[x]表示以x结尾的最大严格升序连续串，f2[x]表示以x开头的最大严格升序连续串然后瞎jb搞一下就可以了具体看代码吧<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> N 100005</span></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span> x=<span class="number">0</span>;<span class="keyword">char</span> ch=getchar();</div><div class="line">	<span class="keyword">while</span>(ch&lt;<span class="string">'0'</span>||ch&gt;<span class="string">'9'</span>)ch=getchar();</div><div class="line">	<span class="keyword">while</span>(ch&gt;=<span class="string">'0'</span>&amp;&amp;ch&lt;=<span class="string">'9'</span>)x=x*<span class="number">10</span>+ch-<span class="string">'0'</span>,ch=getchar();</div><div class="line">	<span class="keyword">return</span> x;</div><div class="line">&#125;</div><div class="line"><span class="keyword">int</span> n,a[N],f1[N],f2[N];</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	n=read();</div><div class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;i++)</div><div class="line">	 a[i]=read();</div><div class="line">	f1[<span class="number">1</span>]=<span class="number">1</span>;</div><div class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">2</span>;i&lt;=n;i++)</div><div class="line">	 <span class="keyword">if</span> (a[i]&gt;a[i<span class="number">-1</span>])f1[i]=f1[i<span class="number">-1</span>]+<span class="number">1</span>;</div><div class="line">	 <span class="keyword">else</span> f1[i]=<span class="number">1</span>;</div><div class="line">	f2[n]=<span class="number">1</span>;</div><div class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i=n<span class="number">-1</span>;i&gt;=<span class="number">1</span>;i--)</div><div class="line">	 <span class="keyword">if</span> (a[i]&lt;a[i+<span class="number">1</span>])f2[i]=f2[i+<span class="number">1</span>]+<span class="number">1</span>;</div><div class="line">	 <span class="keyword">else</span> f2[i]=<span class="number">1</span>;</div><div class="line">	<span class="keyword">int</span> ans=max(f2[<span class="number">2</span>]+<span class="number">1</span>,f1[n<span class="number">-1</span>]+<span class="number">1</span>);</div><div class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">2</span>;i&lt;n;i++)</div><div class="line">	 <span class="keyword">if</span> (a[i<span class="number">-1</span>]&lt;a[i+<span class="number">1</span>]<span class="number">-1</span>)ans=max(ans,f1[i<span class="number">-1</span>]+<span class="number">1</span>+f2[i+<span class="number">1</span>]);</div><div class="line">	 <span class="keyword">else</span> ans=max(ans,max(f1[i<span class="number">-1</span>]+<span class="number">1</span>,f2[i+<span class="number">1</span>]+<span class="number">1</span>));</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,ans);</div><div class="line">&#125;</div></pre></td></tr></table></figure><p></p>
+<h2 id="T2"><a href="#T2" class="headerlink" title="T2"></a>T2</h2><p><a href="http://codeforces.com/contest/463/problem/D" target="_blank" rel="external">传送门</a><br>这题的题意大概是给你k个n的排列，求他们的最长公共子序列的长度是多少。还是老样子，先想5分钟</p>
+<p></p><p align="center"><big>1分钟</big></p><p></p>
+<p></p><p align="center"><big>2分钟</big></p><p></p>
+<p></p><p align="center"><big>3分钟</big></p><p></p>
+<p></p><p align="center"><big>4分钟</big></p><p></p>
+<p></p><p align="center"><big>5分钟</big></p><br>好，时间到了，这题可以用图论的最长路来做：先一把{n}^{2}的预处理，如果有每一个全排列的数字x都在数字y的前面，那么x，y建立一条有向边。之后先建立一个超级原点连向所有的n个点，再建立一个超级汇点，使得所有的n个点都连向它。然后要注意的是这两条边的边权都是0。再跑一遍spfa算法，求得从超级原点到超级汇点的最长路，记得答案还要+1。<br>具体详见代码<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="keyword">int</span> n,K,a[<span class="number">100</span>][<span class="number">5005</span>];</div><div class="line"><span class="keyword">struct</span> edge</div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span> to,next,val;</div><div class="line">&#125;e[<span class="number">1005</span>*<span class="number">1005</span>];<span class="comment">//一点要注意边数要开到n^2级别的</span></div><div class="line"><span class="keyword">int</span> g[<span class="number">5005</span>],cnt=<span class="number">0</span>,q[<span class="number">1005</span>*<span class="number">1005</span>],dis[<span class="number">5005</span>],f[<span class="number">5005</span>];<span class="comment">//队列大小也要开打</span></div><div class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span> x=<span class="number">0</span>,f=<span class="number">1</span>;<span class="keyword">char</span> ch=getchar();</div><div class="line">    <span class="keyword">while</span>(ch&lt;<span class="string">'0'</span>||ch&gt;<span class="string">'9'</span>)&#123;<span class="keyword">if</span> (ch==<span class="string">'-'</span>)f=<span class="number">-1</span>;ch=getchar();&#125;</div><div class="line">    <span class="keyword">while</span>(ch&gt;=<span class="string">'0'</span>&amp;&amp;ch&lt;=<span class="string">'9'</span>)x=x*<span class="number">10</span>+ch-<span class="string">'0'</span>,ch=getchar();</div><div class="line">    <span class="keyword">return</span> x*f;</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">insert</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y,<span class="keyword">int</span> z)</span></span></div><div class="line">&#123;</div><div class="line">    cnt++;</div><div class="line">    e[cnt].to=y;</div><div class="line">    e[cnt].next=g[x];</div><div class="line">    e[cnt].val=z;</div><div class="line">    g[x]=cnt;</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">spfa</span><span class="params">(<span class="keyword">int</span> s)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="built_in">memset</span>(dis,<span class="number">-1</span>,<span class="keyword">sizeof</span>(dis));</div><div class="line">    <span class="keyword">int</span> i,u,v,h=<span class="number">1</span>,t=<span class="number">1</span>;</div><div class="line">    q[t]=s,dis[s]=<span class="number">0</span>,f[s]=<span class="number">1</span>;</div><div class="line">    <span class="keyword">while</span>(h&lt;=t)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">for</span> (f[u=q[h++]]=<span class="number">0</span>,i=g[u];i;i=e[i].next)</div><div class="line">         <span class="keyword">if</span> ((v=e[i].to)&amp;&amp;dis[u]+e[i].val&gt;dis[v])</div><div class="line">         &#123;</div><div class="line">             dis[v]=dis[u]+e[i].val;</div><div class="line">             <span class="keyword">if</span> (!f[v])q[++t]=v,f[v]=<span class="number">1</span>;</div><div class="line">         &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">bool</span> <span class="title">check</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=K;i++)</div><div class="line">     <span class="keyword">if</span> (a[i][x]&gt;=a[i][y])<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">    <span class="keyword">return</span> <span class="number">1</span>;</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    n=read();K=read();</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=K;i++)</div><div class="line">     <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;=n;j++)</div><div class="line">      &#123;<span class="keyword">int</span> x=read();a[i][x]=j;&#125;;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;i++)</div><div class="line">     <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;=n;j++)</div><div class="line">      <span class="keyword">if</span> (check(i,j))</div><div class="line">       insert(i,j,<span class="number">1</span>);</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;i++)</div><div class="line">     insert(<span class="number">0</span>,i,<span class="number">0</span>),insert(i,n+<span class="number">1</span>,<span class="number">0</span>);</div><div class="line">    spfa(<span class="number">0</span>);</div><div class="line">    <span class="keyword">int</span> ans=<span class="number">0</span>;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;=n+<span class="number">1</span>;i++)</div><div class="line">     ans=max(ans,dis[i]);</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"%d\n"</span>,ans+<span class="number">1</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure><p></p>
 
 		<div id="hitokoto"><script>hitokoto()</script></div>
       
@@ -407,9 +411,9 @@ $('#search-keyword').on('keydown',function(e){
       
         <div class="post-tags">
           
-            <a href="/tags/题解/" rel="tag">#题解</a>
+            <a href="/tags/变强/" rel="tag">#变强</a>
           
-            <a href="/tags/模板/" rel="tag">#模板</a>
+            <a href="/tags/日常日记/" rel="tag">#日常日记</a>
           
         </div>
       
@@ -418,17 +422,13 @@ $('#search-keyword').on('keydown',function(e){
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/03/30/3月30日-一个新的节日/" rel="next" title="3月30日--一个新的节日">
-                <i class="fa fa-chevron-left"></i> 3月30日--一个新的节日
+              <a href="/2016/08/15/一个新的开始/" rel="next" title="一个新的开始">
+                <i class="fa fa-chevron-left"></i> 一个新的开始
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/04/11/黄学长博客镜像/" rel="prev" title="黄学长博客镜像">
-                黄学长博客镜像 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -454,8 +454,8 @@ $('#search-keyword').on('keydown',function(e){
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/04/06/转：搞懂树状数组/"
-           data-title="转：搞懂树状数组" data-url="http://zhaoleyi.github.io/2016/04/06/转：搞懂树状数组/">
+      <div class="ds-thread" data-thread-key="2016/08/25/讲课作业补全记/"
+           data-title="讲课作业补全记" data-url="http://zhaoleyi.github.io/2016/08/25/讲课作业补全记/">
       </div>
     
   </div>
@@ -659,7 +659,7 @@ $('#search-keyword').on('keydown',function(e){
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#正文（转）"><span class="nav-number">2.</span> <span class="nav-text">正文（转）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#树状数组是干什么的？"><span class="nav-number">2.1.</span> <span class="nav-text">树状数组是干什么的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#树状数组怎么干的？"><span class="nav-number">2.2.</span> <span class="nav-text">树状数组怎么干的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结一下吧"><span class="nav-number">2.3.</span> <span class="nav-text">总结一下吧</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#dp入门"><span class="nav-number">1.</span> <span class="nav-text">dp入门</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#T1"><span class="nav-number">1.2.</span> <span class="nav-text">T1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#T2"><span class="nav-number">1.3.</span> <span class="nav-text">T2</span></a></li></ol></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">
